@@ -113,8 +113,8 @@ export class CircuitBoard extends Phaser.Scene {
 		this.level.onConnectorAdded((con: Connector) => this.drawConnector(con));
 		this.level.onComponentDeleted.add((comp: Component) => {
 			// clear tilemap
-			for (let dx = 0; dx < comp.info.size[0]; dx++) {
-				for (let dy = 0; dy < comp.info.size[1]; dy++) {
+			for (let dx = 0; dx < comp.info.size.x; dx++) {
+				for (let dy = 0; dy < comp.info.size.y; dy++) {
 					this.layer0?.removeTileAt(comp.mx + dx, comp.my + dy);
 				}
 			}
@@ -206,8 +206,8 @@ export class CircuitBoard extends Phaser.Scene {
 		
 		function drawComponent(layer: Phaser.Tilemaps.TilemapLayer, x: number, y: number, type: string) {
 			const info = getComponentInfo(type);
-			for (let dx = 0; dx < info.size[0]; dx++) {
-				for (let dy = 0; dy < info.size[1]; dy++) {
+			for (let dx = 0; dx < info.size.x; dx++) {
+				for (let dy = 0; dy < info.size.y; dy++) {
 					layer.putTileAt(info.tileIdx + dx + TILESET_WIDTH * dy, x + dx, y + dy);
 				}
 			}

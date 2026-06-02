@@ -1,11 +1,11 @@
 import allLevels from '../data/levels.json';
 import { ComponentInfo, getComponentInfo } from './ComponentInfo';
 import { ASTNode, evaluateExpression, evaluateScript, Parser } from '../util/parser';
-import levelData from '../data/levels.json';
 import { inverseLerp } from '../util/math';
 import { Signal } from '../util/Signal';
 import { IPoint, Point, shortestDistanceToSegment } from '../util/point';
 import { SaveData } from './SaveData';
+import { getLevelData, LaserColor } from './LevelData';
 
 export type TriggieEvent = {
 	event: 'hit' | 'dead' | 'return' | 'explode',
@@ -13,9 +13,7 @@ export type TriggieEvent = {
 
 export class TriggieData {
 	
-	constructor(x: number, y: number) {
-		this.x = x;
-		this.y = y;
+	constructor(public x: number, public y: number, public color: string) {
 	}
 	
 	readonly onEvent = new Signal<TriggieEvent>();
@@ -35,8 +33,6 @@ export class TriggieData {
 		this.onEvent.dispatch({ event });
 	}
 
-	x = 0;
-	y = 0;
 	hits = 0;
 }
 
@@ -120,8 +116,8 @@ export class LevelState {
 		for (const comp of this.components) {
 			const ports = Object.entries(comp.info.ports);
 			for (const [ portName, portInfo ] of ports) {
-				const portX = comp.mx + portInfo.delta[0];
-				const portY = comp.my + portInfo.delta[1];
+				const portX = comp.mx + portInfo.delta.x;
+				const portY = comp.my + portInfo.delta.y;
 				if (portX === pos.x && portY === pos.y) {
 					return { comp, portName, portType: portInfo.type };
 				}
@@ -146,7 +142,7 @@ export class LevelState {
 		for (const comp of this.components) {
 			if (LevelState.overlaps(
 				{ x: comp.mx, y: comp.my },
-				{ x: comp.info.size[0], y: comp.info.size[1] },
+				comp.info.size,
 				mpos,
 				size,
 			)) {
@@ -185,11 +181,20 @@ export class LevelState {
 	emptyStart(levelNo: number) {
 		this.currentLevel = levelNo;
 
-		const output = new Component('output_xy');
-		output.mx = 18;
-		output.my = 1;
-		output.fixed = true;
-		this.addComponent(output);
+		const colorToComponents = {
+			"red":  { key: "output_rxy", y: 1 },
+			"blue": { key: "output_bxy", y: 4 },
+			"grey": { key: "output_xy", y: 7 },
+		};
+
+		for (const color of Object.keys(getLevelData(levelNo).laser) as LaserColor[]) {
+			const { key, y } = colorToComponents[color];
+			const output = new Component(key);
+			output.mx = 18;
+			output.my = y;
+			output.fixed = true;
+			this.addComponent(output);
+		}
 
 		const clock = new Component('simple_clock');
 		clock.mx = 4;
@@ -201,7 +206,7 @@ export class LevelState {
 	findComponentAt(mpos: Point) {
 		for (const comp of this.components) {
 			const delta = mpos.minus({ x: comp.mx, y: comp.my });
-			if (delta.x >= 0 && delta.y >= 0 && delta.x < comp.info.size[0] && delta.y < comp.info.size[1]) {
+			if (delta.x >= 0 && delta.y >= 0 && delta.x < comp.info.size.x && delta.y < comp.info.size.y) {
 				return comp;
 			}
 		}
@@ -293,24 +298,35 @@ export class LevelState {
 			// }
 		}
 
-		const range = levelData.levels[this.currentLevel].range;
-		const laserCo = new Point(
-			inverseLerp(range[0], range[2], globalValues.get('X') ?? 0),
-			inverseLerp(range[1], range[3], globalValues.get('Y') ?? 0),
-		);
-		this.onLaser.dispatch(laserCo);
+		const range = getLevelData(this.currentLevel).range;
+		const colors = Object.keys(getLevelData(this.currentLevel).laser);
+		const colorPrefixMap: Record<string, string> = {
+			grey: '',
+			red: 'R',
+			green: 'G',
+			blue: 'B',
+		};
+		for (const color of colors) {
+			const prefix = colorPrefixMap[color];
+			const laserCo = new Point(
+				inverseLerp(range[0], range[2], globalValues.get(`${prefix}X`) ?? 0),
+				inverseLerp(range[1], range[3], globalValues.get(`${prefix}Y`) ?? 0),
+			);
+			this.onLaser.dispatch({ ...laserCo, color });
 
-		if (this.laserKillRemain > 0) {
-			this.handleLaserKill(laserCo);
+			if (this.laserKillRemain > 0) {
+				this.handleLaserKill(laserCo, color);
+			}
 		}
+
 	}
 
-	handleLaserKill(laserCo: Point) {
+	handleLaserKill(laserCo: Point, color: string) {
 		const CUTOFF_DISTANCE = 0.05;
 		// find a triggie within range...
 		for (const trig of this.triggies) {
 			const dist = Point.length(laserCo.minus(trig));
-			if (dist < CUTOFF_DISTANCE) {
+			if (dist < CUTOFF_DISTANCE && (color === 'grey' || color === trig.color)) {
 				trig.hit();
 				if (trig.hits === 2) {
 					this.fragCounter++;
@@ -328,7 +344,7 @@ export class LevelState {
 	fireLaser() {
 		if (this.laserKillRemain > 0) { return; } // laser already fired!
 		this.fragCounter = 0;
-		this.laserKillRemain = NUM_TRIGGIES * 2;
+		this.laserKillRemain = (NUM_TRIGGIES * 2) * Object.keys(getLevelData(this.currentLevel!).laser).length;
 	}
 	
 	readonly onLaserCycleComplete = new Signal<boolean>();
@@ -342,22 +358,24 @@ export class LevelState {
 	}
 	
 	initializeTriggies() {
-		const func = levelData.levels[this.currentLevel].func;
-		const ast = new Parser(func).parse();
-		this.createTriggies(ast);
+		const { laser } = getLevelData(this.currentLevel);
+		for (const [ color, func ] of Object.entries(laser ?? {})) {
+			const ast = new Parser(func).parse();
+			this.createTriggies(ast, color);
+		}
 	}
 
 	triggies: TriggieData[] = [];
 
-	private createTriggies(ast: ASTNode) {
-		const range = levelData.levels[this.currentLevel].range;
+	private createTriggies(ast: ASTNode, color: string) {
+		const range = getLevelData(this.currentLevel).range;
 		for (let i = 0; i < NUM_TRIGGIES; i++) {
 			const t = i / NUM_TRIGGIES;
 			const result = evaluateScript(ast, { t });
 			const x = inverseLerp(range[0], range[2], result.x);
 			const y = inverseLerp(range[1], range[3], result.y);
 
-			const triggie = new TriggieData(x, y);
+			const triggie = new TriggieData(x, y, color);
 			this.triggies.push(triggie);
 			if (this.cbCreateTriggie) {
 				this.cbCreateTriggie(triggie);
@@ -433,7 +451,7 @@ export class LevelState {
 	// 	this.cbComponentUpdate = cb;
 	// }
 
-	readonly onLaser = new Signal<IPoint>();
+	readonly onLaser = new Signal<IPoint & { color : string }>();
 
 	asSaveData(): SaveData {
 		return {

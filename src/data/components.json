@@ -3,11 +3,12 @@
 
 		"integer": {
 			"name": "Integer Dial 0..10",
-			"size": [ 4, 3 ],
+			"shortName": "Dial",
+			"size": { "x": 4, "y": 3 },
 			"tileIdx": 3,
 			"ports": {
 				"U": {
-					"delta" : [0, 2],
+					"delta": { "x": 0, "y": 2 },
 					"type" : "out",
 					"calc" : "v"
 				}
@@ -16,11 +17,12 @@
 
 		"simple_clock": {
 			"name": "Simple Clock",
-			"size": [ 2, 3 ],
+			"shortName": "Clock",
+			"size": { "x": 2, "y": 3 },
 			"tileIdx": 7,
 			"ports": {
 				"T": {
-					"delta": [0, 2],
+					"delta": { "x": 0, "y": 2 },
 					"type" : "out",
 					"calc" : "frac(t)"
 				}
@@ -29,16 +31,74 @@
 
 		"output_xy": {
 			"name": "Laser Coordinate Output",
-			"size": [ 2, 2 ],
+			"shortName": "Laser",
+			"size": { "x": 2, "y": 2 },
 			"tileIdx": 9,
 			"ports": {
 				"X": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in",
 					"global": true
 				},
 				"Y": {
-					"delta": [0, 1],
+					"delta": { "x": 0, "y": 1 },
+					"type" : "in",
+					"global": true
+				}
+			}
+		},
+
+		"output_rxy": {
+			"name": "Laser Coordinate Output (Red)",
+			"shortName": "Red laser",
+			"size": { "x": 2, "y": 2 },
+			"tileIdx": 13,
+			"ports": {
+				"RX": {
+					"delta": { "x": 0, "y": 0 },
+					"type" : "in",
+					"global": true
+				},
+				"RY": {
+					"delta": { "x": 0, "y": 1 },
+					"type" : "in",
+					"global": true
+				}
+			}
+		},
+
+		"output_bxy": {
+			"name": "Laser Coordinate Output (Blue)",
+			"shortName": "Blue laser",
+			"size": { "x": 2, "y": 2 },
+			"tileIdx": 11,
+			"ports": {
+				"BX": {
+					"delta": { "x": 0, "y": 0 },
+					"type" : "in",
+					"global": true
+				},
+				"BY": {
+					"delta": { "x": 0, "y": 1 },
+					"type" : "in",
+					"global": true
+				}
+			}
+		},
+
+		"output_gxy": {
+			"name": "Laser Coordinate Output (Green)",
+			"shortName": "Green laser",
+			"size": { "x": 2, "y": 2 },
+			"tileIdx": 15,
+			"ports": {
+				"GX": {
+					"delta": { "x": 0, "y": 0 },
+					"type" : "in",
+					"global": true
+				},
+				"GY": {
+					"delta": { "x": 0, "y": 1 },
 					"type" : "in",
 					"global": true
 				}
@@ -47,19 +107,20 @@
 
 		"add": {
 			"name": "Addition",
-			"size": [ 4, 2 ],
+			"shortName": "+",
+			"size": { "x": 4, "y": 2 },
 			"tileIdx": 224,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"B": {
-					"delta": [0, 1],
+					"delta": { "x": 0, "y": 1 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 1],
+					"delta": { "x": 3, "y": 1 },
 					"type": "out",
 					"calc": "A + B"
 				}
@@ -68,19 +129,20 @@
 
 		"sub": {
 			"name": "Subtraction",
-			"size": [ 4, 2 ],
+			"shortName": "-",
+			"size": { "x": 4, "y": 2 },
 			"tileIdx": 160,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"B": {
-					"delta": [0, 1],
+					"delta": { "x": 0, "y": 1 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 1],
+					"delta": { "x": 3, "y": 1 },
 					"type": "out",
 					"calc": "A - B"
 				}
@@ -89,19 +151,20 @@
 
 		"mul": {
 			"name": "Multiplication",
-			"size": [ 4, 2 ],
+			"shortName": "✕",
+			"size": { "x": 4, "y": 2 },
 			"tileIdx": 96,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"B": {
-					"delta": [0, 1],
+					"delta": { "x": 0, "y": 1 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 1],
+					"delta": { "x": 3, "y": 1 },
 					"type": "out",
 					"calc": "A * B"
 				}
@@ -110,19 +173,20 @@
 
 		"div": {
 			"name": "Division",
-			"size": [ 4, 2 ],
+			"shortName": "÷",
+			"size": { "x": 4, "y": 2 },
 			"tileIdx": 105,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"B": {
-					"delta": [0, 1],
+					"delta": { "x": 0, "y": 1 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 1],
+					"delta": { "x": 3, "y": 1 },
 					"type": "out",
 					"calc": "A / B"
 				}
@@ -131,15 +195,16 @@
 
 		"inc": {
 			"name": "Increment by 1",
-			"size": [ 4, 1 ],
+			"shortName": "Increment",
+			"size": { "x": 4, "y": 1 },
 			"tileIdx": 260,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 0],
+					"delta": { "x": 3, "y": 0 },
 					"type": "out",
 					"calc": "A + 1"
 				}
@@ -148,15 +213,16 @@
 
 		"dec": {
 			"name": "Decrement by 1",
-			"size": [ 4, 1 ],
+			"shortName": "Decrement",
+			"size": { "x": 4, "y": 1 },
 			"tileIdx": 228,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 0],
+					"delta": { "x": 3, "y": 0 },
 					"type": "out",
 					"calc": "A - 1"
 				}
@@ -166,15 +232,16 @@
 
 		"abs": {
 			"name": "Absolute Value",
-			"size": [ 4, 1 ],
+			"shortName": "Abs",
+			"size": { "x": 4, "y": 1 },
 			"tileIdx": 264,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 0],
+					"delta": { "x": 3, "y": 0 },
 					"type": "out",
 					"calc": "abs(A)"
 				}
@@ -183,15 +250,16 @@
 
 		"neg": {
 			"name": "Negate Value",
-			"size": [ 4, 1 ],
+			"shortName": "Neg",
+			"size": { "x": 4, "y": 1 },
 			"tileIdx": 268,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 0],
+					"delta": { "x": 3, "y": 0 },
 					"type": "out",
 					"calc": "0 - A"
 				}
@@ -200,15 +268,16 @@
 
 		"sign": {
 			"name": "Sign Function",
-			"size": [ 4, 1 ],
+			"shortName": "Sign",
+			"size": { "x": 4, "y": 1 },
 			"tileIdx": 272,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [3, 0],
+					"delta": { "x": 3, "y": 0 },
 					"type": "out",
 					"calc": "sign(A)"
 				}
@@ -217,21 +286,58 @@
 
 		"sincos": {
 			"name": "Sine and Cosine",
-			"size": [ 5, 4 ],
+			"shortName": "Sin & Cos",
+			"size": { "x": 5, "y": 4 },
 			"tileIdx": 100,
 			"ports": {
 				"A": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [4, 1],
+					"delta": { "x": 4, "y": 1 },
 					"type" : "out",
 					"calc": "cos(A * 6.28318)"
 				},
 				"V": {
-					"delta": [2, 3],
+					"delta": { "x": 2, "y": 3 },
 					"type": "out",
+					"calc": "sin(A * 6.28318)"
+				}
+			}
+		},
+
+		"cos": {
+			"name": "Cosine function",
+			"shortName": "Cos",
+			"size": { "x": 4, "y": 2 },
+			"tileIdx": 109,
+			"ports": {
+				"A": {
+					"delta": { "x": 0, "y": 0 },
+					"type" : "in"
+				},
+				"U": {
+					"delta": { "x": 3, "y": 1 },
+					"type" : "out",
+					"calc": "cos(A * 6.28318)"
+				}
+			}
+		},
+
+		"sin": {
+			"name": "Sine function",
+			"shortName": "Sin",
+			"size": { "x": 3, "y": 3 },
+			"tileIdx": 113,
+			"ports": {
+				"A": {
+					"delta": { "x": 0, "y": 0 },
+					"type" : "in"
+				},
+				"U": {
+					"delta": { "x": 2, "y": 2 },
+					"type" : "out",
 					"calc": "sin(A * 6.28318)"
 				}
 			}
@@ -239,11 +345,12 @@
 
 		"monitor": {
 			"name": "Monitor an output value",
-			"size": [ 2, 3 ],
+			"shortName": "Monitor",
+			"size": { "x": 2, "y": 3 },
 			"tileIdx": 169,
 			"ports": {
 				"A": {
-					"delta" : [0, 2],
+					"delta": { "x": 0, "y": 2 },
 					"type" : "in"
 				}
 			}
@@ -251,20 +358,21 @@
 
 		"int_frac": {
 			"name": "Split integer and fraction",
-			"size": [ 3, 3 ],
+			"shortName": "Int & Frac",
+			"size": { "x": 3, "y": 3 },
 			"tileIdx": 288,
 			"ports": {
 				"A": {
-					"delta": [1, 0],
+					"delta": { "x": 1, "y": 0 },
 					"type" : "in"
 				},
 				"U": {
-					"delta": [0, 2],
+					"delta": { "x": 0, "y": 2 },
 					"type": "out",
 					"calc": "floor(A)"
 				},
 				"V": {
-					"delta": [2, 2],
+					"delta": { "x": 2, "y": 2 },
 					"type": "out",
 					"calc": "frac(A)"
 				}
@@ -273,30 +381,29 @@
 
 		"lerp": {
 			"name": "Linear Interpolation",
-			"size": [ 3, 3 ],
+			"shortName": "Interpolate",
+			"size": { "x": 3, "y": 3 },
 			"tileIdx": 291,
 			"ports": {
 				"L": {
-					"delta": [0, 0],
+					"delta": { "x": 0, "y": 0 },
 					"type" : "in"
 				},
 				"A": {
-					"delta": [1, 0],
+					"delta": { "x": 1, "y": 0 },
 					"type" : "in"
 				},
 				"H": {
-					"delta": [2, 0],
+					"delta": { "x": 2, "y": 0 },
 					"type" : "in"
 				},
 				"V": {
-					"delta": [1, 2],
+					"delta": { "x": 1, "y": 2 },
 					"type": "out",
 					"calc": "L + (H - L) * A"
 				}
 			}
 		}
-
-
 
 	}
 }

@@ -1,4 +1,4 @@
-import { getComponentInfo } from "../sim/ComponentInfo";
+import { componentExists, getComponentInfo } from "../sim/ComponentInfo";
 import { Component, LevelState } from "../sim/LevelState";
 import { assert } from "../util/assert";
 import { Point } from "../util/point";
@@ -22,30 +22,12 @@ export class BuildModeSwitch {
 
 	readonly onBuildModeChange = new Signal<string>();
 
-	currentMode = 'Connectors';
+	currentMode = 'Connector';
 	setBuildMode(value: string) {
 		this.currentMode = value;
 		this.onBuildModeChange.dispatch(value);
 	}
 }
-
-const componentTypeMap: Record<string, string> = {
-	"sin+cos": "sincos",
-	"+": "add",
-	"-": "sub",
-	"÷": "div",
-	"✕": "mul",
-	"int+frac": "int_frac",
-	"lerp": "lerp",
-	"clock": "simple_clock",
-	"dial": "integer",
-	"increment": "inc",
-	"decrement": "dec",
-	"monitor": "monitor",
-	"abs": "abs",
-	"neg": "neg",
-	"sign": "sign",
-};
 		
 export class ConnectorBuildMode implements DragHandler {
 	
@@ -73,11 +55,11 @@ export class ConnectorBuildMode implements DragHandler {
 		this.fromPos = mpos;
 
 		const { currentMode } = this.buildModeSwitch;
-		if (currentMode in componentTypeMap) {
+		if (componentExists(currentMode)) {
 			// try to place component at mpos
-			const componentType = componentTypeMap[currentMode];
+			const componentType = currentMode;
 			const size = getComponentInfo(componentType).size;
-			if (this.level.isAreaFree(mpos, { x: size[0], y: size[1] } )) {
+			if (this.level.isAreaFree(mpos, size )) {
 				const comp = new Component(componentType);
 				comp.mx = mpos.x;
 				comp.my = mpos.y;
@@ -130,14 +112,14 @@ export class ConnectorBuildMode implements DragHandler {
 
 	mouseMove(mpos: Point): void {
 		const { currentMode } = this.buildModeSwitch;
-		if (currentMode in componentTypeMap) {
+		if (componentExists(currentMode)) {
 			// try to place component at mpos
-			const componentType = componentTypeMap[currentMode];
+			const componentType = currentMode;
 			const size = getComponentInfo(componentType).size;
-			const isValid = this.level.isAreaFree(mpos, { x: size[0], y: size[1] } );
+			const isValid = this.level.isAreaFree(mpos, size );
 			this.graphics.clear();
 			this.graphics.fillStyle(isValid ? 0x00cc00 : 0xcc0000, 0.5);
-			this.graphics.fillRect(mpos.x * 16, mpos.y * 16, size[0] * 16, size[1] * 16);
+			this.graphics.fillRect(mpos.x * 16, mpos.y * 16, size.x * 16, size.y * 16);
 		}
 		else if (currentMode === "Delete") {
 			this.graphics.clear();
@@ -146,7 +128,7 @@ export class ConnectorBuildMode implements DragHandler {
 				if (!comp.fixed) {
 					const info = getComponentInfo(comp.componentType);
 					this.graphics.fillStyle(0xcc0000, 0.5);
-					this.graphics.fillRect(comp.mx * 16, comp.my * 16, info.size[0] * 16, info.size[1] * 16);
+					this.graphics.fillRect(comp.mx * 16, comp.my * 16, info.size.x * 16, info.size.y * 16);
 				}
 			}
 			else {

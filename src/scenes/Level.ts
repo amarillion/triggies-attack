@@ -5,6 +5,8 @@ import levelData from '../data/levels.json';
 import { getQuickSaveData, saveGameData } from "../sim/SaveData";
 import { assert } from "../util/assert";
 import { BuildModeSwitch } from "../sprites/BuildMode";
+import { getLevelData } from "../sim/LevelData";
+import { componentExists, getComponentInfo } from "../sim/ComponentInfo";
 
 export default class extends Phaser.Scene {
 
@@ -130,27 +132,21 @@ export default class extends Phaser.Scene {
 	}
 	
 	createBuildPalette() {
-		const components = [
-			"sin+cos", "+", "-", "÷", "✕", "int+frac", "lerp", "clock", "dial", "increment",
-			// nice to have:
-			"monitor", "abs", "decrement", "neg", "sign",
-			// maybe
-			// "if", "<", "modulo", "sin", "cos", "atan2", "clock+", "Matrix",
-		];
-
-		const other = [
-			"Connector", "Delete",
+		const shopComponents = getLevelData(this.level!.currentLevel).shop;
+		
+		const commonComponents = [
+			"monitor", "Connector", "Delete",
 		];
 
 		const group = new ToggleButtonGroup();
 
 		let xco = 0;
 		let yco = 0;
-		for (const text of  [ ...components, ...other ]) {
+		for (const key of  [ ...shopComponents, ...commonComponents ]) {
 			new ToggleButton(this,
-				xco * 64, yco * 16, 64, 16, text, {
+				xco * 64, yco * 16, 64, 16, componentExists(key) ? getComponentInfo(key).shortName : key, {
 					group,
-					onToggle: (isPressed: boolean) => { if (isPressed) { this.buildModeSwitch?.setBuildMode(text); } },
+					onToggle: (isPressed: boolean) => { if (isPressed) { this.buildModeSwitch?.setBuildMode(key); } },
 				},
 			);
 			xco++;

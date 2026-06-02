@@ -14,10 +14,17 @@ export class Triggie extends Phaser.GameObjects.Sprite {
 		model.onEvent.add(data => this.onHit(data));
 		this.model = model;
 
+		let animationKey;
+		switch (model.color) {
+			case "red": animationKey = "red"; break;
+			case "blue": animationKey = "blue"; break;
+			case "green": animationKey = "green"; break;
+			default: animationKey = pickOne([ "brown", "grey", "moss" ]); break;
+		}
 		this.scene.time.addEvent({
 			delay: randomInt(500),
 			callback: () => {
-				this.play(pickOne([ "brown", "grey", "moss" ]));
+				this.play(animationKey);
 				this.goBack();
 			},
 		});
