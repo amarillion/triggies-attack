@@ -14,10 +14,10 @@ class ComponentView {
 
 	constructor(public component: Component, public scene: Phaser.Scene) {
 		const pos = new Point(this.component.mx * TILE_WIDTH, this.component.my * TILE_HEIGHT);
-		if (component.componentType === "sincos") {
+		if ([ "sincos", "cos", "sin" ].includes(component.componentType)) {
 			this.graphics = scene.add.graphics({ lineStyle: { width: 1, color: 0xffffff } });
 		}
-		if (component.componentType === "monitor" || component.componentType === "integer") {
+		if ([ "monitor", "integer" ].includes(component.componentType)) {
 			const ofst = component.componentType === "monitor" ? 0 : 28;
 			this.text = scene.add.text(pos.x + ofst, pos.y, "", {
 				fontSize: "11px", color: "#82ff51",
@@ -36,24 +36,45 @@ class ComponentView {
 	update() {
 		const pos = new Point(this.component.mx * TILE_WIDTH, this.component.my * TILE_HEIGHT);
 		switch (this.component.componentType) {
-			case "sincos": {
-				const cx = pos.x + 40;
-				const cy = pos.y + 24;
+			case "cos": case "sin": case "sincos": {
+				const config = {
+					"sincos": [ 40, 24, 18 ],
+					"sin": [ 32, 16, 10 ],
+					"cos": [ 32, 16, 10 ],
+				};
+				const [ dcx, dcy, R ] = config[this.component.componentType];
+				const cx = pos.x + dcx;
+				const cy = pos.y + dcy;
 				const a = (this.component.portValues.get('A') ?? 0) * Math.PI * 2;
-				const R = 18;
 				this.graphics!.clear();
 				this.graphics!.lineStyle(1, 0xffffff);
+				const sinaR = Math.sin(a) * R;
+				const cosaR = Math.cos(a) * R;
 				this.graphics!.strokeLineShape(
-					new Phaser.Geom.Line(cx, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
+					new Phaser.Geom.Line(cx, cy, cx + cosaR , cy - sinaR),
 				);
-				this.graphics!.lineStyle(1, 0xff8251);
-				this.graphics!.strokeLineShape(
-					new Phaser.Geom.Line(cx + Math.cos(a) * R, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
-				);
-				this.graphics!.lineStyle(1, 0x5182ff);
-				this.graphics!.strokeLineShape(
-					new Phaser.Geom.Line(cx, cy + Math.sin(a) * R, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
-				);
+				if (this.component.componentType !== "sin") {
+					this.graphics!.strokeLineShape(
+						new Phaser.Geom.Line(cx + cosaR, cy, cx + cosaR, cy - sinaR),
+					);
+				}
+				if (this.component.componentType !== "cos") {
+					this.graphics!.strokeLineShape(
+						new Phaser.Geom.Line(cx, cy - sinaR, cx + cosaR, cy - sinaR),
+					);
+				}
+				if (this.component.componentType !== "cos") {
+					this.graphics!.lineStyle(1, 0xff8251);
+					this.graphics!.strokeLineShape(
+						new Phaser.Geom.Line(cx, cy, cx, cy - sinaR),
+					);
+				}
+				if (this.component.componentType !== "sin") {
+					this.graphics!.lineStyle(1, 0x5182ff);
+					this.graphics!.strokeLineShape(
+						new Phaser.Geom.Line(cx, cy, cx + cosaR, cy),
+					);
+				}
 				break;
 			}
 			case "monitor": {
