@@ -40,9 +40,27 @@
 			"range": [-1, -1, 1, 1]
 		},
 		{
+			"shop": [ "sin", "add", "sub", "mul", "div", "integer" ],
+			"title": "Amplitude with attitude",
+			"laser": { 
+				"blue": "x = t\ny = 0.5 * sin(t * 6.28318)",
+				"red": "x = t\ny = sin(t * 6.28318)" 
+			},
+			"range": [0, -1, 1, 1]
+		},
+		{
 			"shop": [ "sin", "cos", "sincos", "mul", "integer" ],
 			"title": "Fast Sine",
 			"laser": { "grey": "x = t\ny = sin(t * 2 * 6.28318)" },
+			"range": [0, -1, 1, 1]
+		},
+		{
+			"shop": [ "sin", "add", "sub", "mul", "div", "integer" ],
+			"title": "Phase shift",
+			"laser": { 
+				"blue": "x = t\ny = sin(t * 6.28318)",
+				"red": "x = t\ny = cos(t * 6.28318)" 
+			},
 			"range": [0, -1, 1, 1]
 		},
 		{
