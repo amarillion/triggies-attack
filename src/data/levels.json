@@ -46,38 +46,38 @@
 			"range": [0, -1, 1, 1]
 		},
 		{
-			"shop": [ "mul", "add", "sub", "div", "increment", "decrement", "integer", "abs" ],
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "integer", "abs" ],
 			"title": "Sawtooth",
 			"laser": { "grey": "x = t\ny = abs((t * 2) - 1)" },
 			"range": [0, 0, 1, 1]
 		},
 		{
 			"title": "Parabola",
-			"shop": [ "mul", "add", "sub", "div", "increment", "decrement", "integer", "sin", "cos", "sincos" ],
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "integer", "sin", "cos", "sincos" ],
 			"laser": { "grey": "x = (2 * t) - 1\ny = (2 * t - 1) * (2 * t - 1)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
 			"title": "Spiral",
-			"shop": [ "mul", "add", "sub", "div", "increment", "decrement", "integer", "sincos" ],
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "integer", "sincos" ],
 			"laser": { "grey": "x = t * cos(t * 2 * 6.28318)\ny = t * sin(t * 2 * 6.28318)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
 			"title": "Lissajous",
-			"shop": [ "mul", "add", "sub", "div", "increment", "decrement", "integer", "sincos" ],
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "integer", "sincos" ],
 			"laser": { "grey": "x = sin(t * 6.28318)\ny = sin(2 * t * 6.28318)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
 			"title": "Pentagon",
-			"shop": [ "mul", "add", "sub", "div", "increment", "decrement", "integer", "sincos", "lerp", "int_frac" ],
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "integer", "sincos", "lerp", "int_frac" ],
 			"laser": { "grey": "n = 5\nstep = floor(t * n)\nbx = cos(step * 6.28318 / n)\nby = sin(step * 6.28318 / n)\ncx = cos((step + 1) * 6.28318 / n)\ncy = sin((step + 1) * 6.28318 / n)\nx = lerp(bx, cx, (t * n) - step)\ny = lerp(by, cy, (t * n) - step)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
 			"title": "Pentagram",
-			"shop": [ "mul", "add", "sub", "div", "increment", "decrement", "integer", "sincos", "lerp" ],
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "integer", "sincos", "lerp" ],
 			"laser": { "grey": "n = 5\nstep = floor(t * n)\nbx = cos(step * 6.28318 / n)\nby = sin(step * 6.28318 / n)\ncx = cos((step + 2) * 6.28318 / n)\ncy = sin((step + 2) * 6.28318 / n)\nx = lerp(bx, cx, (t * n) - step)\ny = lerp(by, cy, (t * n) - step)" },
 			"range": [-1, -1, 1, 1]
 		}

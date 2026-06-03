@@ -195,7 +195,7 @@
 
 		"inc": {
 			"name": "Increment by 1",
-			"shortName": "Increment",
+			"shortName": "inc",
 			"size": { "x": 4, "y": 1 },
 			"tileIdx": 260,
 			"ports": {
@@ -213,7 +213,7 @@
 
 		"dec": {
 			"name": "Decrement by 1",
-			"shortName": "Decrement",
+			"shortName": "dec",
 			"size": { "x": 4, "y": 1 },
 			"tileIdx": 228,
 			"ports": {
