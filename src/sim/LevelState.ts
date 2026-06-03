@@ -116,7 +116,7 @@ export class LevelState {
 	}
 
 	sharedInit() {
-		assert(this.currentLevel);
+		assert(this.currentLevel !== undefined);
 		this.numLasers = Object.keys(getLevelData(this.currentLevel).laser).length;
 	}
 
