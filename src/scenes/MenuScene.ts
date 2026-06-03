@@ -11,15 +11,25 @@ export default class extends Phaser.Scene {
 	create() {
 		this.cameras.main.setBackgroundColor('#000000');
 
-		new Button(this.cameras.main.centerX - 90, this.cameras.main.centerY - 40, 180, 36, "Start Game", this, {
+		const buttonWidth = 240;
+		const style = { fontSize: '22px' };
+		let yco = this.cameras.main.centerY - 60;
+		new Button(this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Start Game", this, {
 			callback: () => { this.scene.start('Story'); },
-			style: { fontSize: '24px' },
+			style,
 		});
-
-		new Button(this.cameras.main.centerX - 90, this.cameras.main.centerY + 4, 180, 36, "Load Game", this, {
+		yco += 44;
+		new Button(this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Load Game", this, {
 			callback: () => { this.scene.start('Level', { loadFromSave: true }); },
 			disabled: !hasValidSaveData(),
-			style: { fontSize: '24px' },
+			style,
+		});
+		yco += 44;
+		new Button(this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Toggle Fullscreen", this, {
+			callback: () => {
+				this.scale.toggleFullscreen();
+			},
+			style,
 		});
 
 		// star emitter
