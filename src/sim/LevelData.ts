@@ -2,7 +2,7 @@ import z from 'zod';
 import levelData from '../data/levels.json';
 import { assert } from '../util/assert';
 
-const LaserColorSchema = z.enum([ "grey", "red", "blue" ]);
+const LaserColorSchema = z.enum([ "grey", "red", "blue", "green" ]);
 export type LaserColor = z.infer<typeof LaserColorSchema>;
 const LevelInfoSchema = z.object({
 	shop: z.array(z.string()),

@@ -3,6 +3,7 @@ import { Triggie } from "../sprites/Triggie.js";
 
 import { LevelState, TriggieData } from "../sim/LevelState";
 import { assert } from "../util/assert.js";
+import { getLevelData, LaserColor } from "../sim/LevelData.js";
 
 export const VIEWPORT_SIZE = 320;
 export const MARGIN = 20;
@@ -23,14 +24,19 @@ export default class extends Phaser.Scene {
 
 		this.level.onCreateTriggie(t => this.createTriggie(t));
 
-		this.level.onLaser.add(({x, y}) => this.setLaser(x, y));
+		this.level.onLaser.add(({x, y, color}) => this.setLaser(x, y, color));
 
-		this.emitter = this.add.particles(0, 0, 'flares', {
-			frame: { frames: [ 'red', 'green', 'blue', 'white', 'yellow' ], cycle: true },
-			blendMode: 'ADD',
-			lifespan: 500,
-			scale: { start: 0.2, end: 0.05 },
-		});
+		for (const color of Object.keys(getLevelData(this.level.currentLevel).laser) as LaserColor[]) {
+			// map laser color to flare colors.
+			const frames = color === 'grey' ? [ 'red', 'green', 'blue', 'white', 'yellow' ] : [ color ];
+			const emitter = this.add.particles(0, 0, 'flares', {
+				frame: { frames, cycle: true },
+				blendMode: 'ADD',
+				lifespan: 500,
+				scale: { start: 0.2, end: 0.05 },
+			});
+			this.emitter.set(color, emitter);
+		}
 
 		const container = this.add.sprite(0, VIEWPORT_SIZE-16, 'container').setOrigin(0, 0);
 		this.level.onLaserCycleComplete.add(isWin => {
@@ -60,19 +66,18 @@ export default class extends Phaser.Scene {
 		});
 	}
 
-	emitter?: Phaser.GameObjects.Particles.ParticleEmitter;
+	emitter = new Map<LaserColor, Phaser.GameObjects.Particles.ParticleEmitter>();
 
 	createTriggie(t: TriggieData) {
 		const triggie = new Triggie(this, t);
 		this.add.existing(triggie);
 	}
 
-	setLaser(x: number, y: number) {
-		if (this.emitter) {
-			// TODO: tween?
-			this.emitter.particleX = (x * (VIEWPORT_SIZE - (MARGIN * 2))) + MARGIN;
-			this.emitter.particleY = VIEWPORT_SIZE - MARGIN - (y * (VIEWPORT_SIZE - (MARGIN * 2)));
-		}
+	setLaser(x: number, y: number, color: LaserColor) {
+		const emitter = this.emitter.get(color);
+		assert(emitter);
+		emitter.particleX = (x * (VIEWPORT_SIZE - (MARGIN * 2))) + MARGIN;
+		emitter.particleY = VIEWPORT_SIZE - MARGIN - (y * (VIEWPORT_SIZE - (MARGIN * 2)));
 	}
 
 	preload () {

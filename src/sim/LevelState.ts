@@ -6,6 +6,7 @@ import { Signal } from '../util/Signal';
 import { IPoint, Point, shortestDistanceToSegment } from '../util/point';
 import { SaveData } from './SaveData';
 import { getLevelData, LaserColor } from './LevelData';
+import { assert } from '../util/assert';
 
 export type TriggieEvent = {
 	event: 'hit' | 'dead' | 'return' | 'explode',
@@ -110,6 +111,13 @@ export class LevelState {
 			const [ x2, y2 ] = rawCon.to;
 			this.createConnector({ x: x1, y: y1 }, { x: x2, y: y2 });
 		}
+
+		this.sharedInit();
+	}
+
+	sharedInit() {
+		assert(this.currentLevel);
+		this.numLasers = Object.keys(getLevelData(this.currentLevel).laser).length;
 	}
 
 	findPort(pos: IPoint) {
@@ -183,7 +191,8 @@ export class LevelState {
 
 		const colorToComponents = {
 			"red":  { key: "output_rxy", y: 1 },
-			"blue": { key: "output_bxy", y: 4 },
+			"blue": { key: "output_bxy", y: 3 },
+			"green": { key: "output_gxy", y: 5 },
 			"grey": { key: "output_xy", y: 7 },
 		};
 
@@ -201,6 +210,8 @@ export class LevelState {
 		clock.my = 0;
 		clock.fixed = true;
 		this.addComponent(clock);
+
+		this.sharedInit();
 	}
 
 	findComponentAt(mpos: Point) {
@@ -299,7 +310,7 @@ export class LevelState {
 		}
 
 		const range = getLevelData(this.currentLevel).range;
-		const colors = Object.keys(getLevelData(this.currentLevel).laser);
+		const colors = Object.keys(getLevelData(this.currentLevel).laser) as LaserColor[];
 		const colorPrefixMap: Record<string, string> = {
 			grey: '',
 			red: 'R',
@@ -335,16 +346,19 @@ export class LevelState {
 		}
 
 		if (--this.laserKillRemain === 0) {
-			this.onLaserCycleComplete.dispatch(this.fragCounter === NUM_TRIGGIES);
+			this.onLaserCycleComplete.dispatch(this.fragCounter === NUM_TRIGGIES * this.numLasers);
 		}
 	}
 
 	laserKillRemain = 0;
 	fragCounter = 0;
+	numLasers = 1;
+
 	fireLaser() {
 		if (this.laserKillRemain > 0) { return; } // laser already fired!
 		this.fragCounter = 0;
-		this.laserKillRemain = (NUM_TRIGGIES * 2) * Object.keys(getLevelData(this.currentLevel!).laser).length;
+		this.laserKillRemain = (NUM_TRIGGIES * 2) * this.numLasers;
+		console.log("Laser kill remain:", this.laserKillRemain);
 	}
 	
 	readonly onLaserCycleComplete = new Signal<boolean>();
@@ -446,12 +460,7 @@ export class LevelState {
 		}
 	}
 
-	// cbComponentUpdate?: (comp: Component, data: Map<string, number>) => void;
-	// onComponentUpdate(cb: (comp: Component, data: Map<string, number>) => void) {
-	// 	this.cbComponentUpdate = cb;
-	// }
-
-	readonly onLaser = new Signal<IPoint & { color : string }>();
+	readonly onLaser = new Signal<IPoint & { color : LaserColor }>();
 
 	asSaveData(): SaveData {
 		return {
