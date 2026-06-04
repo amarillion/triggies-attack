@@ -14,6 +14,11 @@ export default defineConfig({
 		},
 	},
 	base: './', // Use relative paths in index.html, makes our app relocatable.
+	define: {
+		// eslint-disable-next-line no-undef
+		__VERSION__: JSON.stringify(process.env.npm_package_version || '0.0.0'),
+		__BUILD_DATE__: JSON.stringify(new Date().toDateString()),
+	},
 	plugins: [
 		VitePWA({
 			registerType: 'autoUpdate',

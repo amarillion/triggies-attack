@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { Button } from '../components/Button';
 import { hasValidSaveData } from '../sim/SaveData';
 
+const versionStr = `Version ${__VERSION__} - ${__BUILD_DATE__}`;
+
 export default class extends Phaser.Scene {
 
 	constructor() {
@@ -30,6 +32,10 @@ export default class extends Phaser.Scene {
 				this.scale.toggleFullscreen();
 			},
 			style,
+		});
+
+		this.add.text(0, this.cameras.main.height - 16, versionStr, {
+			fontSize: '12px', color: '#ccc',
 		});
 
 		// star emitter

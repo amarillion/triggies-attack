@@ -12,10 +12,7 @@ export default tseslint.config(
 		plugins: {
 			'@stylistic': stylistic,
 		},
-		languageOptions: {
-			globals: globals.browser,
-		},
-
+		languageOptions: { globals: { ...globals.browser, '__VERSION__': false, '__BUILD_DATE__': false } },
 		rules: {
 			'eqeqeq': [ 'error', 'always' ],
 			'camelcase': [ 'error' ],
