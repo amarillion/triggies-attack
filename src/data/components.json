@@ -4,6 +4,7 @@
 		"integer": {
 			"name": "Integer Dial 0..10",
 			"shortName": "Dial",
+			"hint": "Click on the dial to change the output. Outputs a whole number between 0 and 10.",
 			"size": { "x": 4, "y": 3 },
 			"tileIdx": 3,
 			"ports": {
@@ -16,7 +17,8 @@
 		},
 
 		"simple_clock": {
-			"name": "Simple Clock",
+			"name": "Clock signal",
+			"hint": "Generates a clock signal. Starts at 0 and increases to 1.0, then starts over again. Usually the starting point of a circuit.",
 			"shortName": "Clock",
 			"size": { "x": 2, "y": 3 },
 			"tileIdx": 7,
@@ -31,6 +33,7 @@
 
 		"output_xy": {
 			"name": "Laser Coordinate Output",
+			"hint": "Moves the x and y coordinates of the laser. This should be the output of your circuit.",
 			"shortName": "Laser",
 			"size": { "x": 2, "y": 2 },
 			"tileIdx": 9,
@@ -50,6 +53,7 @@
 
 		"output_rxy": {
 			"name": "Laser Coordinate Output (Red)",
+			"hint": "Moves the x and y coordinates of the RED laser. This should be the output of your circuit.",
 			"shortName": "Red laser",
 			"size": { "x": 2, "y": 2 },
 			"tileIdx": 13,
@@ -69,6 +73,7 @@
 
 		"output_bxy": {
 			"name": "Laser Coordinate Output (Blue)",
+			"hint": "Moves the x and y coordinates of the BLUE laser. This should be the output of your circuit.",
 			"shortName": "Blue laser",
 			"size": { "x": 2, "y": 2 },
 			"tileIdx": 11,
@@ -88,6 +93,7 @@
 
 		"output_gxy": {
 			"name": "Laser Coordinate Output (Green)",
+			"hint": "Moves the x and y coordinates of the GREEN laser. This should be the output of your circuit.",
 			"shortName": "Green laser",
 			"size": { "x": 2, "y": 2 },
 			"tileIdx": 15,
@@ -107,6 +113,7 @@
 
 		"add": {
 			"name": "Addition",
+			"hint": "Adds two inputs together.",
 			"shortName": "+",
 			"size": { "x": 4, "y": 2 },
 			"tileIdx": 224,
@@ -129,6 +136,7 @@
 
 		"sub": {
 			"name": "Subtraction",
+			"hint": "Substracts the bottom input from the top input.",
 			"shortName": "-",
 			"size": { "x": 4, "y": 2 },
 			"tileIdx": 160,
@@ -151,6 +159,7 @@
 
 		"mul": {
 			"name": "Multiplication",
+			"hint": "Multiplies two inputs.",
 			"shortName": "✕",
 			"size": { "x": 4, "y": 2 },
 			"tileIdx": 96,
@@ -173,6 +182,7 @@
 
 		"div": {
 			"name": "Division",
+			"hint": "Divides the top input by the bottom input.",
 			"shortName": "÷",
 			"size": { "x": 4, "y": 2 },
 			"tileIdx": 105,
@@ -195,6 +205,7 @@
 
 		"inc": {
 			"name": "Increment by 1",
+			"hint": "Adds exactly 1 to the input.",
 			"shortName": "inc",
 			"size": { "x": 4, "y": 1 },
 			"tileIdx": 260,
@@ -213,6 +224,7 @@
 
 		"dec": {
 			"name": "Decrement by 1",
+			"hint": "Substract 1 from the input.",
 			"shortName": "dec",
 			"size": { "x": 4, "y": 1 },
 			"tileIdx": 228,
@@ -232,6 +244,7 @@
 
 		"abs": {
 			"name": "Absolute Value",
+			"hint": "Takes the absolute value of the input. This means that for negative inputs, the sign is removed, making them positive.",
 			"shortName": "Abs",
 			"size": { "x": 4, "y": 1 },
 			"tileIdx": 264,
@@ -250,6 +263,7 @@
 
 		"neg": {
 			"name": "Negate Value",
+			"hint": "Makes positive inputs negative, and vice versa.",
 			"shortName": "Neg",
 			"size": { "x": 4, "y": 1 },
 			"tileIdx": 268,
@@ -268,6 +282,7 @@
 
 		"sign": {
 			"name": "Sign Function",
+			"hint": "Ouputs 1, -1, depending on whether the input is netagive.",
 			"shortName": "Sign",
 			"size": { "x": 4, "y": 1 },
 			"tileIdx": 272,
@@ -286,6 +301,7 @@
 
 		"sincos": {
 			"name": "Sine and Cosine",
+			"hint": "Outputs both sine and cosine. An input of 1.0 corresponds to a full circle, i.e. the input is multiplied by 2π.",
 			"shortName": "Sin & Cos",
 			"size": { "x": 5, "y": 4 },
 			"tileIdx": 100,
@@ -309,6 +325,7 @@
 
 		"cos": {
 			"name": "Cosine function",
+			"hint": "Outputs a cosine wave. An input of 1.0 corresponds to a full circle, i.e. the input is multiplied by 2π.",
 			"shortName": "Cos",
 			"size": { "x": 4, "y": 2 },
 			"tileIdx": 109,
@@ -327,6 +344,7 @@
 
 		"sin": {
 			"name": "Sine function",
+			"hint": "Outputs a sine wave. An input of 1.0 corresponds to a full circle, i.e. the input is multiplied by 2π.",
 			"shortName": "Sin",
 			"size": { "x": 3, "y": 3 },
 			"tileIdx": 113,
@@ -345,6 +363,7 @@
 
 		"monitor": {
 			"name": "Monitor an output value",
+			"hint": "Connect this to any intermediate output to see its value. Useful for debugging and checking your work.",
 			"shortName": "Monitor",
 			"size": { "x": 2, "y": 3 },
 			"tileIdx": 169,
@@ -358,6 +377,7 @@
 
 		"int_frac": {
 			"name": "Split integer and fraction",
+			"hint": "Splits the input in two, the parts before and after the decimal separator.",
 			"shortName": "Int & Frac",
 			"size": { "x": 3, "y": 3 },
 			"tileIdx": 288,
@@ -382,6 +402,7 @@
 		"lerp": {
 			"name": "Linear Interpolation",
 			"shortName": "Interpolate",
+			"hint": "Interpolates the middle input between left and right. The middle input range is between 1 and 0. The left and right inputs correspond to the output range.",
 			"size": { "x": 3, "y": 3 },
 			"tileIdx": 291,
 			"ports": {

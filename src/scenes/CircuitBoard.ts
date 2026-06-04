@@ -124,7 +124,7 @@ export class CircuitBoard extends Phaser.Scene {
 
 	create(data: { level: LevelState, buildModeSwitch: BuildModeSwitch }) {
 		this.cameras.main.setBackgroundColor('#73d484');
-		this.cameras.main.setViewport(0, 64, 16*20, 16*15);
+		this.cameras.main.setViewport(0, 64+40, 16*20, 16*15);
 
 		this.reset();
 

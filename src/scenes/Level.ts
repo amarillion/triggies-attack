@@ -33,7 +33,8 @@ export default class extends Phaser.Scene {
 		});
 
 		this.buildModeSwitch = new BuildModeSwitch();
-		
+		this.buildModeSwitch.onBuildModeChange.add(mode => this.updateHint(mode));
+
 		this.time.addEvent({
 			delay: 1000 / 60,
 			loop: true,
@@ -68,9 +69,42 @@ export default class extends Phaser.Scene {
 
 		this.createGameButtons();
 		this.createBuildPalette();
+
+		this.hintText = this.add.text(0, 64, '', {
+			fontSize: '9px',
+			fixedWidth: 320,
+			fixedHeight: 40,
+			wordWrap: {
+				width: 316,
+			},
+			padding: {
+				x: 2, y: 2,
+			},
+		});
+
 	}
 
 	oldPlaybackMode: string = 'Play';
+
+	hintText? : Phaser.GameObjects.Text;
+	setHint(hint: string) {
+		this.hintText!.setText(hint);
+	}
+
+	updateHint(buildMode: string) {
+		let text = "";
+		if (componentExists(buildMode)) {
+			const { hint, name } = getComponentInfo(buildMode);
+			text = `${name}:\n${hint}`;
+		}
+		else if (buildMode === "Connector") {
+			text = "Drag from an output to an input to connect them.";
+		}
+		else if (buildMode === "Delete") {
+			text = "Click on a component or connector to delete it.";
+		}
+		this.setHint(text);
+	}
 
 	onLevelComplete() {
 		this.time.addEvent({
