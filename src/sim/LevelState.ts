@@ -7,6 +7,7 @@ import { IPoint, Point, shortestDistanceToSegment } from '../util/point';
 import { SaveData } from './SaveData';
 import { getLevelData, LaserColor } from './LevelData';
 import { assert } from '../util/assert';
+import { DefaultMap } from '../util/DefaultMap';
 
 export type TriggieEvent = {
 	event: 'hit' | 'dead' | 'return' | 'explode',
@@ -57,7 +58,7 @@ export class Component {
 		return BUTTON_STATE_TO_VALUE[this.state % BUTTON_STATE_TO_VALUE.length];
 	}
 	readonly portValues = new Map<string, number>();
-	readonly connectorMap = new Map<string, Connector[]>();
+	readonly connectorMap = new DefaultMap<string, Connector[]>([]);
 	readonly onDeleted = new Signal<void>();
 
 	constructor(componentType: string) {
@@ -67,11 +68,7 @@ export class Component {
 
 	connect(portName: string, connector: Connector) {
 		console.log(`Connecting component ${this.componentType} port ${portName}`);
-		if (this.connectorMap.has(portName)) {
-			this.connectorMap.get(portName)!.push(connector);
-		} else {
-			this.connectorMap.set(portName, [ connector ]);
-		}
+		this.connectorMap.get(portName).push(connector);
 	}
 }
 
@@ -290,7 +287,7 @@ export class LevelState {
 
 					// console.log(`Component ${comp.componentType} port ${portName} calculated value: ${value}`);
 					// now propagate to connected components
-					const connectors = comp.connectorMap.get(portName) || [];
+					const connectors = comp.connectorMap.get(portName);
 					for (const con of connectors) {
 						const otherComp = con.toComponent;
 						const otherPort = con.toPort;
@@ -437,11 +434,11 @@ export class LevelState {
 		
 		// delete port mappings
 		if (con.fromComponent && con.fromPort) {
-			const connectors = con.fromComponent.connectorMap.get(con.fromPort) ?? [];
+			const connectors = con.fromComponent.connectorMap.get(con.fromPort);
 			con.fromComponent.connectorMap.set(con.fromPort, connectors.filter(c => c !== con));
 		}
 		if (con.toComponent && con.toPort) {
-			const connectors = con.toComponent.connectorMap.get(con.toPort) ?? [];
+			const connectors = con.toComponent.connectorMap.get(con.toPort);
 			con.toComponent.connectorMap.set(con.toPort, connectors.filter(c => c !== con));
 		}
 		
