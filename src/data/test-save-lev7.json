@@ -1,10 +1,10 @@
 {
 	"saveData": {
-		"currentLevel": 7,
+		"currentLevel": 13,
 		"components": [
 			{
-				"type": "integer",
-				"data": { "value": 5 },
+				"type": "constant",
+				"data": { "state": 7 },
 				"x": 0,
 				"y": 0,
 				"rotation": 0

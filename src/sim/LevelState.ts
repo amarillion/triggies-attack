@@ -40,6 +40,7 @@ export class TriggieData {
 type CBCreateTriggie = (t: TriggieData) => void;
 
 const NUM_TRIGGIES = 64;
+export const BUTTON_STATE_TO_VALUE = [ 0, 1/4, 1/2, 1, 2, 3, 4, 5, 6 ];
 
 export class Component {
 
@@ -49,7 +50,12 @@ export class Component {
 	mx = 0;
 	my = 0;
 	rotation = 0; /* 0-3 */
-	value = 0; // used for dials.
+
+	// used for dials.
+	state = BUTTON_STATE_TO_VALUE.findIndex(i => i === 1);
+	get value(): number {
+		return BUTTON_STATE_TO_VALUE[this.state % BUTTON_STATE_TO_VALUE.length];
+	}
 	readonly portValues = new Map<string, number>();
 	readonly connectorMap = new Map<string, Connector[]>();
 	readonly onDeleted = new Signal<void>();
@@ -99,8 +105,8 @@ export class LevelState {
 			comp.rotation = rawComp.rotation;
 			comp.fixed = Boolean(rawComp.fixed);
 
-			if (rawComp?.data?.value) {
-				comp.value = rawComp.data.value;
+			if (rawComp?.data?.state) {
+				comp.state = rawComp.data.state;
 			}
 
 			this.addComponent(comp);
@@ -473,7 +479,7 @@ export class LevelState {
 					rotation: comp.rotation,
 					fixed: comp.fixed,
 					data: {
-						value: comp.value,
+						state: comp.state,
 					},
 				})),
 				connectors: this.connectors.map(con => ({

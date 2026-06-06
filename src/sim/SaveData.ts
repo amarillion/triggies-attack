@@ -5,7 +5,7 @@ import saveData from '../data/test-save-lev7.json';
 const ComponentSchema = z.object({
 	type: z.string(),
 	data: z.object({
-		value: z.number(),
+		state: z.number(),
 	}).optional(),
 	x: z.number(),
 	y: z.number(),
@@ -40,10 +40,12 @@ function parseSaveData(jsonData: unknown): SaveData {
 	return result;
 }
 
+const TINS_QUICK_SAVE = "tins-quick-save";
+
 export function hasValidSaveData(): boolean {
-	const sessionSaveData = localStorage.getItem("tins-quick-save") ?? '';
+	const localStorageData = localStorage.getItem(TINS_QUICK_SAVE) ?? '';
 	try {
-		parseSaveData(JSON.parse(sessionSaveData));
+		parseSaveData(JSON.parse(localStorageData));
 		return true;
 	} catch (_error) {
 		return false;
@@ -52,10 +54,10 @@ export function hasValidSaveData(): boolean {
 
 export function getQuickSaveData(): SaveData {
 	// return parseSaveData(saveData);
-	return parseSaveData(JSON.parse(localStorage.getItem("tins-quick-save") ?? ''));
+	return parseSaveData(JSON.parse(localStorage.getItem(TINS_QUICK_SAVE) ?? ''));
 }
 
 export function saveGameData(data: SaveData) {
 	// save to local storage
-	localStorage.setItem("tins-quick-save", JSON.stringify(data));
+	localStorage.setItem(TINS_QUICK_SAVE, JSON.stringify(data));
 }

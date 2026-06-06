@@ -1,10 +1,10 @@
 {
 	"components": {
 
-		"integer": {
-			"name": "Integer Dial 0..10",
+		"constant": {
+			"name": "Constant output dial",
 			"shortName": "Dial",
-			"hint": "Click on the dial to change the output. Outputs a whole number between 0 and 10.",
+			"hint": "Click on the dial to change the output. Outputs whole numbers between 0 and 6, as well as fractions 1/2 and 1/4.",
 			"size": { "x": 4, "y": 3 },
 			"tileIdx": 3,
 			"ports": {

@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { getComponentInfo, TILESET_WIDTH } from "../sim/ComponentInfo";
-import { Component, Connector, LevelState } from "../sim/LevelState";
+import { BUTTON_STATE_TO_VALUE, Component, Connector, LevelState } from "../sim/LevelState";
 import { Point } from "../util/point";
 import { BuildModeSwitch, ConnectorBuildMode } from "../sprites/BuildMode";
 
@@ -17,7 +17,7 @@ class ComponentView {
 		if ([ "sincos", "cos", "sin" ].includes(component.componentType)) {
 			this.graphics = scene.add.graphics({ lineStyle: { width: 1, color: 0xffffff } });
 		}
-		if ([ "monitor", "integer" ].includes(component.componentType)) {
+		if ([ "monitor", "constant" ].includes(component.componentType)) {
 			const ofst = component.componentType === "monitor" ? 0 : 28;
 			this.text = scene.add.text(pos.x + ofst, pos.y, "", {
 				fontSize: "11px", color: "#82ff51",
@@ -81,7 +81,7 @@ class ComponentView {
 				this.text!.setText(`${this.component.portValues.get('A') ?? 0}`.slice(0, 4));
 				break;
 			}
-			case "integer": {
+			case "constant": {
 				this.text!.setText(`${this.component.value}`.slice(0, 4));
 				break;
 			}
@@ -178,11 +178,11 @@ export class CircuitBoard extends Phaser.Scene {
 				const mpos = pos.scale(1 / TILE_WIDTH).floor();
 				const comp = this.level?.findComponentAt(mpos);
 
-				if (comp?.componentType === "integer") {
+				if (comp?.componentType === "constant") {
 					const delta = mpos.minus({ x: comp.mx, y: comp.my });
 					// check that we are touching the dial
 					if (delta.x < 2 && delta.y < 2) {
-						comp.value = (comp.value + 1) % 10;
+						comp.state = (comp.state + 1) % BUTTON_STATE_TO_VALUE.length;
 					}
 				}
 
