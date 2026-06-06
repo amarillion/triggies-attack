@@ -67,6 +67,7 @@ export default class extends Phaser.Scene {
 		this.cameras.main.setBackgroundColor('rgb(68, 50, 0)');
 		this.script = this.scriptRunner();
 
+		this.input.on('pointerdown', () => this.endScene());
 		this.input.keyboard?.once('keydown', () => this.endScene());
 	}
 

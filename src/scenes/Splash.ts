@@ -32,7 +32,8 @@ class AbstractSplash extends Phaser.Scene {
 		this.cameras.main.fadeIn(FADE_DURATION_MSEC, 0, 0, 0);
 		this.time.delayedCall(FADE_DURATION_MSEC + SHOW_DURATION_MSEC, () => this.startFade());
 		
-		this.input.keyboard?.once('keydown-SPACE', () => this.startFade());
+		this.input.keyboard?.once('keydown', () => this.startFade());
+		this.input.on('pointerdown', () => this.startFade());
 	}
 
 	private fadeStarted = false;
