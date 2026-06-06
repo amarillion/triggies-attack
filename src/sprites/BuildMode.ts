@@ -159,7 +159,12 @@ export class ConnectorBuildMode implements DragHandler {
 			const toPort = this.level.findPort(mpos);
 			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
 			if (isValid) {
-				this.level.createConnector(this.fromPos, this.toPos);
+				if (fromPort.portType === 'out') {
+					this.level.createConnector(this.fromPos, this.toPos);
+				}
+				else {
+					this.level.createConnector(this.toPos, this.fromPos);
+				}
 				this.scene.sound.play('connect');
 			}
 			else {

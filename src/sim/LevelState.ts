@@ -171,19 +171,18 @@ export class LevelState {
 		con.to[1] = to.y;
 
 		// find matching port, if any...
-		
-		let result = this.findPort(from);
-		if (result) {
-			con.fromComponent = result.comp;
-			con.fromPort = result.portName;
-			result.comp.connect(result.portName, con);
+		const fromResult = this.findPort(from);
+		if (fromResult && fromResult.portType === 'out') {
+			con.fromComponent = fromResult.comp;
+			con.fromPort = fromResult.portName;
+			fromResult.comp.connect(fromResult.portName, con);
 		}
 
-		result = this.findPort(to);
-		if (result) {
-			con.toComponent = result.comp;
-			con.toPort = result.portName;
-			result.comp.connect(result.portName, con);
+		const toResult = this.findPort(to);
+		if (toResult && toResult.portType === 'in') {
+			con.toComponent = toResult.comp;
+			con.toPort = toResult.portName;
+			toResult.comp.connect(toResult.portName, con);
 		}
 
 		this.addConnector(con);
