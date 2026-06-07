@@ -123,18 +123,28 @@ export class LevelState {
 		this.numLasers = Object.keys(getLevelData(this.currentLevel).laser).length;
 	}
 
-	findPort(pos: IPoint) {
+	findPort(pos: IPoint, treshold = 1) {
+		let minResult: { comp: Component, portName: string, portType: 'in' | 'out', pos: IPoint } | null = null;
+		let minValue = treshold;
 		for (const comp of this.components) {
 			const ports = Object.entries(comp.info.ports);
 			for (const [ portName, portInfo ] of ports) {
-				const portX = comp.mx + portInfo.delta.x;
-				const portY = comp.my + portInfo.delta.y;
-				if (portX === pos.x && portY === pos.y) {
-					return { comp, portName, portType: portInfo.type };
+				const portPos = Point.plus({ x: comp.mx, y: comp.my }, portInfo.delta);
+				const dist = portPos.minus(pos).manhattan();
+				if (dist < minValue) {
+					minValue = dist;
+					minResult = { comp, portName, portType: portInfo.type, pos: portPos };
+				}
+				else if (dist === minValue) {
+					// ambiguous result, refuse to apply.
+					minResult = null;
+				}
+				if (minValue === 0) {
+					return minResult; // no closer value possible.
 				}
 			}
 		}
-		return null;
+		return minResult;
 	}
 
 	//TODO: move to utility class

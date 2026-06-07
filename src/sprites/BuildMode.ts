@@ -1,7 +1,7 @@
 import { componentExists, getComponentInfo } from "../sim/ComponentInfo";
 import { Component, LevelState } from "../sim/LevelState";
 import { assert } from "../util/assert";
-import { Point } from "../util/point";
+import { IPoint, Point } from "../util/point";
 import { Signal } from "../util/Signal";
 import Phaser from 'phaser';
 
@@ -44,8 +44,8 @@ export class ConnectorBuildMode implements DragHandler {
 		// draw a line from start to end...
 	}
 
-	fromPos?: Point;
-	toPos?: Point;
+	fromPos?: IPoint;
+	toPos?: IPoint;
 
 	mouseOut() {
 		this.graphics.clear();
@@ -90,20 +90,25 @@ export class ConnectorBuildMode implements DragHandler {
 				}
 			}
 		}
-
+		else if (currentMode === "Connector") {
+			const fromPort = this.level.findPort(this.fromPos, 3);
+			if (fromPort !== null) {
+				this.fromPos = fromPort.pos;
+			}
+		}
 	}
 
 	mouseDragMove(mpos: Point, _delta: Point): void {
-		
 		if (this.buildModeSwitch.currentMode === "Connector") {
 			const fromPort = this.level.findPort(this.fromPos!);
-			const toPort = this.level.findPort(mpos);
+			const toPort = this.level.findPort(mpos, 3);
 			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
+			this.toPos = (isValid === true) ? toPort.pos : mpos;
 			// draw line in green
 			this.graphics.clear();
 			this.graphics.lineStyle(2, isValid === true ? 0x00cc00 : 0x0000cc, 0.5);
 			this.graphics.strokeLineShape(
-				new Phaser.Geom.Line(this.fromPos!.x * 16 + 8, this.fromPos!.y * 16 + 8, mpos.x * 16 + 8, mpos.y * 16 + 8),
+				new Phaser.Geom.Line(this.fromPos!.x * 16 + 8, this.fromPos!.y * 16 + 8, this.toPos.x * 16 + 8, this.toPos.y * 16 + 8),
 			);
 		}
 
@@ -156,14 +161,14 @@ export class ConnectorBuildMode implements DragHandler {
 		if (this.buildModeSwitch.currentMode === "Connector") {
 			this.graphics.clear();
 			const fromPort = this.level.findPort(this.fromPos);
-			const toPort = this.level.findPort(mpos);
+			const toPort = this.level.findPort(this.toPos, 3);
 			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
 			if (isValid === true) {
 				if (fromPort.portType === 'out') {
-					this.level.createConnector(this.fromPos, this.toPos);
+					this.level.createConnector(this.fromPos, toPort.pos);
 				}
 				else {
-					this.level.createConnector(this.toPos, this.fromPos);
+					this.level.createConnector(toPort.pos, this.fromPos);
 				}
 				this.scene.sound.play('connect');
 			}
