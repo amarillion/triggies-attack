@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Button } from '../components/Button';
-import { hasValidSaveData } from '../sim/SaveData';
+import { hasSaveData } from '../sim/SaveData';
 
 const versionStr = `Version ${__VERSION__} - ${__BUILD_DATE__}`;
 
@@ -16,18 +16,18 @@ export default class extends Phaser.Scene {
 		const buttonWidth = 240;
 		const style = { fontSize: '22px' };
 		let yco = this.cameras.main.centerY - 60;
-		new Button(this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Start Game", this, {
+		new Button(this, this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Start Game", {
 			callback: () => { this.scene.start('Story'); },
 			style,
 		});
 		yco += 44;
-		new Button(this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Load Game", this, {
+		new Button(this, this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Load Game", {
 			callback: () => { this.scene.start('Level', { loadFromSave: true }); },
-			disabled: !hasValidSaveData(),
+			disabled: !hasSaveData(),
 			style,
 		});
 		yco += 44;
-		new Button(this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Toggle Fullscreen", this, {
+		new Button(this, this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Toggle Fullscreen", {
 			callback: () => {
 				this.scale.toggleFullscreen();
 			},

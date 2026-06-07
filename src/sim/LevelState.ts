@@ -102,7 +102,7 @@ export class LevelState {
 			comp.rotation = rawComp.rotation;
 			comp.fixed = Boolean(rawComp.fixed);
 
-			if (rawComp?.data?.state) {
+			if (rawComp?.data?.state !== undefined) {
 				comp.state = rawComp.data.state;
 			}
 
@@ -290,9 +290,9 @@ export class LevelState {
 					for (const con of connectors) {
 						const otherComp = con.toComponent;
 						const otherPort = con.toPort;
-						if (otherComp && otherPort) {
+						if (otherComp && otherPort !== undefined) {
 							otherComp.portValues.set(otherPort, value);
-							if (otherComp.info.ports[otherPort].global) {
+							if (otherComp.info.ports[otherPort].global === true) {
 								globalValues.set(otherPort, value);
 							}
 							// console.log(`Propagating value ${value} from ${comp.componentType}:${portName} to ${otherComp.componentType}:${otherPort}`);
@@ -432,11 +432,11 @@ export class LevelState {
 		this.connectors = this.connectors.filter(c => c !== con);
 		
 		// delete port mappings
-		if (con.fromComponent && con.fromPort) {
+		if (con.fromComponent && con.fromPort !== undefined) {
 			const connectors = con.fromComponent.connectorMap.get(con.fromPort);
 			con.fromComponent.connectorMap.set(con.fromPort, connectors.filter(c => c !== con));
 		}
-		if (con.toComponent && con.toPort) {
+		if (con.toComponent && con.toPort !== undefined) {
 			const connectors = con.toComponent.connectorMap.get(con.toPort);
 			con.toComponent.connectorMap.set(con.toPort, connectors.filter(c => c !== con));
 		}

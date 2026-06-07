@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { BooleanModel } from '../util/ValueModel';
 
 export type ButtonStyle = Phaser.Types.GameObjects.Text.TextStyle;
 
@@ -19,58 +20,148 @@ const TOGGLED_STYLE = {
 	backgroundColor: '#666666',
 };
 
+const DISABLED_STYLE = {
+	color: '#888888',
+};
+
 export class Button {
-	constructor(x: number, y: number, w: number, h: number, label: string, scene: Phaser.Scene,
-		config: { callback?: () => void, style?: ButtonStyle, disabled?: boolean } = {},
+
+	text: string; // TODO: turn this into ValueModel<string>
+	normalStyle: ButtonStyle;
+	hoverStyle: ButtonStyle;
+	downStyle: ButtonStyle;
+	disabledStyle: ButtonStyle;
+	readonly disabled: BooleanModel;
+	textObject: Phaser.GameObjects.Text;
+	callback: () => void = () => {};
+
+	constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, label: string,
+		config: { callback?: () => void, style?: ButtonStyle, disabled?: boolean | BooleanModel } = {},
 	) {
-		const button = scene.add.text(x, y, label);
-		const normalStyle = {
+		this.text = label;
+		this.textObject = scene.add.text(x, y, label);
+		this.normalStyle = {
 			...BASE_BUTTON_STYLE,
 			...config.style,
 			fixedWidth: w,
 			fixedHeight: h,
 		};
-		const hoverStyle = {
-			...normalStyle,
+		this.hoverStyle = {
+			...this.normalStyle,
 			...HOVER_STYLE,
 		};
-		const downStyle = {
-			...normalStyle,
+		this.downStyle = {
+			...this.normalStyle,
 			...HOVER_STYLE,
 			...TOGGLED_STYLE,
 		};
-		const disabledStyle = {
-			...normalStyle,
-			color: '#888888',
+		this.disabledStyle = {
+			...this.normalStyle,
+			...DISABLED_STYLE,
 		};
-		button
+		if (config.callback) {
+			this.callback = config.callback;
+		}
+		this.textObject
 			.setOrigin(0)
-			.setStyle(config.disabled ? disabledStyle : normalStyle)
 			.setInteractive({ useHandCursor: true })
-			.on('pointerdown', () => { if (!config.disabled) { button.setStyle(downStyle); if (config.callback) { config.callback(); } } })
-			.on('pointerup', () => { if (!config.disabled) { button.setStyle(hoverStyle); } })
-			.on('pointerover', () => { if (!config.disabled) { button.setStyle(hoverStyle); } })
-			.on('pointerout', () => { if (!config.disabled) { button.setStyle(normalStyle); } });
+			.on('pointerdown', () => this.handlePointerDown())
+			.on('pointerup', () => this.handlePointerUp())
+			.on('pointerover', () => this.handlePointerOver())
+			.on('pointerout', () => this.handlePointerOut());
+
+		if (config.disabled instanceof BooleanModel) {
+			this.disabled = config.disabled;
+		}
+		else {
+			this.disabled = new BooleanModel(config.disabled === true);
+		}
+		this.updateStyle();
+
+		this.disabled.onChange.add(({ newVal } : { newVal: boolean}) => {
+			if (newVal) {
+				this.textObject.setInteractive({ useHandCursor: true });
+			} else {
+				this.textObject.disableInteractive();
+			}
+			this.updateStyle();
+		});
+	}
+
+	/**
+	 * Change the button text
+	 * @param {string} newText - New text to display
+	 */
+	setText(newText: string) {
+		this.text = newText;
+		this.textObject.setText(newText);
+	}
+	
+	/**
+	 * Get the current text
+	 * @returns {string}
+	 */
+	getText() {
+		return this.text;
+	}
+
+	/**
+	 * Update the text style based on current state
+	 */
+	updateStyle() {
+		const style = this.disabled.get() ? this.disabledStyle : this.normalStyle;
+		this.textObject.setStyle(style);
+	}
+
+	/**
+	 * Handle pointer down event
+	 */
+	handlePointerDown() {
+		if (this.disabled.get()) { return; }
+		this.callback();
+	}
+	
+	/**
+	 * Handle pointer over event
+	 */
+	handlePointerOver() {
+		if (this.disabled.get()) { return; }
+		this.textObject.setStyle(HOVER_STYLE);
+	}
+
+	handlePointerUp() {
+		if (this.disabled.get()) { return; }
+		this.textObject.setStyle(HOVER_STYLE);
+	}
+	
+	/**
+	 * Handle pointer out event
+	 */
+	handlePointerOut() {
+		if (this.disabled.get()) { return; }
+		this.updateStyle();
+	}
+
+	destroy() {
+		// Remove event listeners
+		this.textObject.off('pointerdown');
+		this.textObject.off('pointerup');
+		this.textObject.off('pointerover');
+		this.textObject.off('pointerout');
+		
+		// Destroy the text object
+		this.textObject.destroy();
 	}
 }
 
 type ToggleCallback = ( newValue: boolean, source: ToggleButton ) => void;
 
 // Initial version of ToggleButton and ToggleButtonGroup generated with DeepSeek
-export class ToggleButton {
+export class ToggleButton extends Button {
 	
-	scene: Phaser.Scene;
-	x: number;
-	y: number;
-
-	text: string;
 	isToggled: boolean;
 	group: ToggleButtonGroup | null;
 	onToggleCallback: ToggleCallback | null;
-	normalStyle: ButtonStyle;
-	toggledStyle: ButtonStyle;
-	textObject: Phaser.GameObjects.Text;
-	originalFill: string | CanvasGradient | CanvasPattern;
 
 	/**
 	 * Creates a new Toggle Button
@@ -84,6 +175,7 @@ export class ToggleButton {
 	 * @param {Object} config.style - Text style for normal state
 	 * @param {Object} config.toggledStyle - Text style for toggled state
 	 * @param {Function} config.onToggle - Callback when toggled state changes
+	 * @param {Boolean} config.disabled - make this button disabled.
 	 */
 	constructor(
 		scene: Phaser.Scene, x: number, y: number, w: number, h: number, text: string,
@@ -92,41 +184,30 @@ export class ToggleButton {
 			group?: ToggleButtonGroup,
 			style?: Phaser.Types.GameObjects.Text.TextStyle,
 			toggledStyle?: Phaser.Types.GameObjects.Text.TextStyle,
+			disabled?: boolean | BooleanModel,
 			onToggle?: ToggleCallback,
 		} = {},
 	) {
-		this.scene = scene;
-		this.x = x;
-		this.y = y;
+		super(scene, x, y, w, h, text, {
+			style: config.style, disabled: config.disabled,
+		});
 		this.text = text;
-		this.isToggled = config.isToggled || false;
+		this.isToggled = config.isToggled ?? false;
 		this.group = config.group || null;
 		this.onToggleCallback = config.onToggle || null;
 		
-		// Default styles
-		this.normalStyle = {
-			...BASE_BUTTON_STYLE,
-			fixedWidth: w,
-			fixedHeight: h,
-			...config.style,
-		};
-		
-		this.toggledStyle = {
+		this.downStyle = {
 			...this.normalStyle,
 			...TOGGLED_STYLE,
 			...config.toggledStyle,
 		};
 		
 		// Create the text object
-		this.textObject = scene.add.text(x, y, text, this.isToggled ? this.toggledStyle : this.normalStyle);
+		this.textObject = scene.add.text(x, y, text);
+
+		this.updateStyle();
 		this.textObject.setOrigin(0);
-		this.textObject.setInteractive({ useHandCursor: true });
-		
-		// Add event listeners
-		this.textObject.on('pointerdown', this.handlePointerDown, this);
-		this.textObject.on('pointerover', this.handlePointerOver, this);
-		this.textObject.on('pointerout', this.handlePointerOut, this);
-		
+				
 		// Add to group if provided
 		if (this.group) {
 			this.group.add(this);
@@ -136,31 +217,24 @@ export class ToggleButton {
 			}
 		}
 		
-		// Store original style for hover effects
-		this.originalFill = this.textObject.style.color;
 	}
-	
+
+	/**
+	 * Update the text style based on current state
+	 */
+	override updateStyle() {
+		const style = this.disabled.get() ? this.disabledStyle : (
+			this.isToggled ? this.downStyle : this.normalStyle
+		);
+		this.textObject.setStyle(style);
+	}
+
 	/**
 	 * Handle pointer down event
 	 */
-	handlePointerDown() {
+	override handlePointerDown() {
+		if (this.disabled.get()) { return; }
 		this.toggle();
-	}
-	
-	/**
-	 * Handle pointer over event
-	 */
-	handlePointerOver() {
-		this.textObject.setStyle(HOVER_STYLE);
-	}
-	
-	/**
-	 * Handle pointer out event
-	 */
-	handlePointerOut() {
-		// Restore to current state's color
-		const currentStyle = this.isToggled ? this.toggledStyle : this.normalStyle;
-		this.textObject.setStyle({ color: currentStyle.color });
 	}
 	
 	/**
@@ -233,79 +307,23 @@ export class ToggleButton {
 	}
 	
 	/**
-	 * Update the text style based on current state
-	 */
-	updateStyle() {
-		const style = this.isToggled ? this.toggledStyle : this.normalStyle;
-		this.textObject.setStyle(style);
-	}
-	
-	/**
-	 * Change the button text
-	 * @param {string} newText - New text to display
-	 */
-	setText(newText: string) {
-		this.text = newText;
-		this.textObject.setText(newText);
-	}
-	
-	/**
-	 * Get the current text
-	 * @returns {string}
-	 */
-	getText() {
-		return this.text;
-	}
-	
-	/**
 	 * Get the toggled state
 	 * @returns {boolean}
 	 */
 	getToggled() {
 		return this.isToggled;
 	}
-	
-	/**
-	 * Set new position
-	 * @param {number} x - New X position
-	 * @param {number} y - New Y position
-	 */
-	setPosition(x: number, y: number) {
-		this.x = x;
-		this.y = y;
-		this.textObject.setPosition(x, y);
-	}
-	
-	/**
-	 * Enable or disable the button
-	 * @param {boolean} enabled - Whether the button should be enabled
-	 */
-	setEnabled(enabled: boolean) {
-		if (enabled) {
-			this.textObject.setInteractive();
-			this.textObject.setStyle({ alpha: 1 });
-		} else {
-			this.textObject.disableInteractive();
-			this.textObject.setStyle({ alpha: 0.5 });
-		}
-	}
-	
+			
 	/**
 	 * Destroy the button and clean up
 	 */
-	destroy() {
+	override destroy() {
+		super.destroy();
+
 		// Remove from group if exists
 		if (this.group) {
 			this.group.remove(this);
 		}
-		
-		// Remove event listeners
-		this.textObject.off('pointerdown', this.handlePointerDown, this);
-		this.textObject.off('pointerover', this.handlePointerOver, this);
-		this.textObject.off('pointerout', this.handlePointerOut, this);
-		
-		// Destroy the text object
-		this.textObject.destroy();
 	}
 }
 

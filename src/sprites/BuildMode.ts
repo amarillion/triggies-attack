@@ -76,7 +76,7 @@ export class ConnectorBuildMode implements DragHandler {
 			this.graphics.clear();
 			const comp = this.level.findComponentAt(mpos);
 			if (comp) {
-				if (comp && !comp.fixed) {
+				if (!comp.fixed) {
 					this.level.deleteComponent(comp);
 					this.scene.sound.play('component-delete');
 					// connectors will be automatically deleted as well.
@@ -93,7 +93,7 @@ export class ConnectorBuildMode implements DragHandler {
 
 	}
 
-	mouseDragMove(mpos: Point, delta: Point): void {
+	mouseDragMove(mpos: Point, _delta: Point): void {
 		
 		if (this.buildModeSwitch.currentMode === "Connector") {
 			const fromPort = this.level.findPort(this.fromPos!);
@@ -101,7 +101,7 @@ export class ConnectorBuildMode implements DragHandler {
 			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
 			// draw line in green
 			this.graphics.clear();
-			this.graphics.lineStyle(2, isValid ? 0x00cc00 : 0x0000cc, 0.5);
+			this.graphics.lineStyle(2, isValid === true ? 0x00cc00 : 0x0000cc, 0.5);
 			this.graphics.strokeLineShape(
 				new Phaser.Geom.Line(this.fromPos!.x * 16 + 8, this.fromPos!.y * 16 + 8, mpos.x * 16 + 8, mpos.y * 16 + 8),
 			);
@@ -155,10 +155,10 @@ export class ConnectorBuildMode implements DragHandler {
 
 		if (this.buildModeSwitch.currentMode === "Connector") {
 			this.graphics.clear();
-			const fromPort = this.level.findPort(this.fromPos!);
+			const fromPort = this.level.findPort(this.fromPos);
 			const toPort = this.level.findPort(mpos);
 			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
-			if (isValid) {
+			if (isValid === true) {
 				if (fromPort.portType === 'out') {
 					this.level.createConnector(this.fromPos, this.toPos);
 				}

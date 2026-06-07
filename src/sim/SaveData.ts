@@ -1,5 +1,5 @@
 import { z } from "zod";
-import saveData from '../data/test-save-lev7.json';
+// import saveData from '../data/test-save-lev7.json';
 
 // Base component schema
 const ComponentSchema = z.object({
@@ -42,14 +42,8 @@ function parseSaveData(jsonData: unknown): SaveData {
 
 const TINS_QUICK_SAVE = "tins-quick-save";
 
-export function hasValidSaveData(): boolean {
-	const localStorageData = localStorage.getItem(TINS_QUICK_SAVE) ?? '';
-	try {
-		parseSaveData(JSON.parse(localStorageData));
-		return true;
-	} catch (_error) {
-		return false;
-	}
+export function hasSaveData(): boolean {
+	return localStorage.getItem(TINS_QUICK_SAVE) !== null;
 }
 
 export function getQuickSaveData(): SaveData {

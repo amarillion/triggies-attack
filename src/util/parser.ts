@@ -246,6 +246,7 @@ export class Parser {
 		if (this.peek() !== TokenType.RPAREN) {
 			do {
 				args.push(this.parseExpression());
+			// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 			} while (this.peek() === TokenType.COMMA && this.eat(TokenType.COMMA));
 		}
 		
@@ -326,9 +327,6 @@ export class Evaluator {
 			
 			case NodeType.Identifier:
 				return this.getVariable((node as IdentifierNode).name);
-			
-			default:
-				throw new Error(`Unknown node type: ${node.type}`);
 		}
 	}
 	

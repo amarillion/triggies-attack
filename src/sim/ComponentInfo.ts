@@ -37,5 +37,5 @@ export function getComponentInfo(type: string): ComponentInfo {
 	assert(parsedComponentInfo.success, `Invalid component info data, ${parsedComponentInfo.error}`);
 	const components = parsedComponentInfo.data.components;
 	assert(type in components, `Unknown component id [${type}]`);
-	return (components as unknown as Record<string, ComponentInfo>)[type];
+	return components[type];
 }

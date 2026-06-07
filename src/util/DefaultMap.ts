@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /**
  * Wraps a Map<K, V>
  * Only difference is that get() returns a default value if key doesn't exist.

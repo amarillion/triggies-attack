@@ -85,7 +85,7 @@ export default class extends Phaser.Scene {
 		if (this.script) {
 			const result = this.script.next();
 			
-			if (result.done) {
+			if (result.done === true) {
 				this.endScene();
 			}
 		}

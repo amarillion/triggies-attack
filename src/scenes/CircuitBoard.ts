@@ -143,7 +143,7 @@ export class CircuitBoard extends Phaser.Scene {
 			view?.destroy();
 			this.components = this.components.filter(c => c.component !== comp);
 		});
-		this.level.onConnectorDeleted.add((con: Connector) => {
+		this.level.onConnectorDeleted.add((_con: Connector) => {
 			this.connectorGraphics?.clear();
 			this.redrawConnectors();
 			

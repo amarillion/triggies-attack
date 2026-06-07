@@ -2,11 +2,12 @@ import Phaser from "phaser";
 import { LevelState } from "../sim/LevelState";
 import { Button, ToggleButton, ToggleButtonGroup } from "../components/Button";
 import levelData from '../data/levels.json';
-import { getQuickSaveData, saveGameData } from "../sim/SaveData";
+import { getQuickSaveData, hasSaveData, saveGameData } from "../sim/SaveData";
 import { assert } from "../util/assert";
 import { BuildModeSwitch } from "../sprites/BuildMode";
 import { getLevelData } from "../sim/LevelData";
 import { componentExists, getComponentInfo } from "../sim/ComponentInfo";
+import { BooleanModel } from "../util/ValueModel";
 
 export default class extends Phaser.Scene {
 
@@ -57,10 +58,17 @@ export default class extends Phaser.Scene {
 		this.scene.launch('CircuitBoard', { level, buildModeSwitch: this.buildModeSwitch });
 		this.scene.launch('Space', { level });
 
-		if (data.loadFromSave) {
-			level.loadFromSave(getQuickSaveData());
+		let loadSuccess = false;
+		if (data.loadFromSave !== null) {
+			try {
+				level.loadFromSave(getQuickSaveData());
+				loadSuccess = true;
+			}
+			catch(_e) {
+				console.log('Could not load save data');
+			}
 		}
-		else {
+		if (!loadSuccess) {
 			level.emptyStart(data.levelNo ?? 0);
 		}
 		
@@ -125,26 +133,30 @@ export default class extends Phaser.Scene {
 
 	createGameButtons() {
 		{
-			const actions: [string, () => void][] = [
+			const BUTTON_WIDTH = 80;
+			const BUTTON_HEIGHT = 16;
+			const saveDataInvalid = new BooleanModel(!hasSaveData());
+			const actions: [string, () => void, BooleanModel|boolean][] = [
 				[ "Quick Load", () => {
 					// NOTE: we skip LevelSplash. It's a quick load after all.
 					this.scene.start('Level', { loadFromSave: true });
-				} ],
+				}, saveDataInvalid ],
 				[ "Quick Save", () => {
 					saveGameData(this.level!.asSaveData());
-				} ],
+					saveDataInvalid.set(false);
+				}, false ],
 				[ "Fire Laser", () => {
 					this.oldPlaybackMode = this.playbackMode;
 					this.playbackMode = "Fire";
 					this.sound.play('laser');
 					if (this.level) this.level.fireLaser();
-				} ],
+				}, false ],
 			];
 
-			let i = 0;
-			for (const [ text, callback ] of actions) {
-				new Button(640 - (3 - i) * 80, 0, 80, 16, text, this, { callback });
-				i++;
+			let xco = 640 - (3 * BUTTON_WIDTH);
+			for (const [ text, callback, disabled ] of actions) {
+				new Button(this, xco, 0, BUTTON_WIDTH, BUTTON_HEIGHT, text, { callback, disabled });
+				xco += BUTTON_WIDTH;
 			}
 		}
 		

@@ -7,6 +7,7 @@ class AssertionError extends Error {
 }
 
 export function assert(test: unknown, msg = "") : asserts test {
+	// eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
 	if (!test) {
 		throw new AssertionError(msg);
 	}
