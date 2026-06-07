@@ -59,7 +59,7 @@ export default class extends Phaser.Scene {
 		this.scene.launch('Space', { level });
 
 		let loadSuccess = false;
-		if (data.loadFromSave !== null) {
+		if (data.loadFromSave === true) {
 			try {
 				level.loadFromSave(getQuickSaveData());
 				loadSuccess = true;
