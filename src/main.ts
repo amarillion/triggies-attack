@@ -35,7 +35,7 @@ class Game extends Phaser.Game {
 	constructor() {
 		super(gameConfig);
 		this.input.mouse?.disableContextMenu();
-		// this.scale.lockOrientation('landscape'); // Doesn't seem to actually do anything?
+		this.scale.lockOrientation('landscape'); // Doesn't seem to actually do anything?
 	}
 }
 
