@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { Button } from '../components/Button';
 import { hasSaveData } from '../sim/SaveData';
+import { ValueModel } from '../util/ValueModel';
 
 const versionStr = `Version ${__VERSION__} - ${__BUILD_DATE__}`;
 
@@ -27,10 +28,14 @@ export default class extends Phaser.Scene {
 			style,
 		});
 		yco += 44;
-		new Button(this, this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Toggle Fullscreen", {
-			callback: () => {
-				this.scale.toggleFullscreen();
-			},
+		
+		const fullScreenLabel = new ValueModel("Fullscreen");
+		document.addEventListener('fullscreenchange', () => {
+			fullScreenLabel.set( document.fullscreenElement ? "Exit Fullscreen" : "Fullscreen" );
+		});
+
+		new Button(this, this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, fullScreenLabel, {
+			callback: () => this.scale.toggleFullscreen(),
 			style,
 		});
 

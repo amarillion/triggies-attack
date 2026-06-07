@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { BooleanModel } from '../util/ValueModel';
+import { BooleanModel, ValueModel } from '../util/ValueModel';
 
 export type ButtonStyle = Phaser.Types.GameObjects.Text.TextStyle;
 
@@ -26,20 +26,27 @@ const DISABLED_STYLE = {
 
 export class Button {
 
-	text: string; // TODO: turn this into ValueModel<string>
+	readonly text: ValueModel<string>;
+	readonly disabled: BooleanModel;
+	
 	normalStyle: ButtonStyle;
 	hoverStyle: ButtonStyle;
 	downStyle: ButtonStyle;
 	disabledStyle: ButtonStyle;
-	readonly disabled: BooleanModel;
-	textObject: Phaser.GameObjects.Text;
+	protected textObject: Phaser.GameObjects.Text;
 	callback: () => void = () => {};
 
-	constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, label: string,
+	constructor(scene: Phaser.Scene, x: number, y: number, w: number, h: number, label: string | ValueModel<string>,
 		config: { callback?: () => void, style?: ButtonStyle, disabled?: boolean | BooleanModel } = {},
 	) {
-		this.text = label;
-		this.textObject = scene.add.text(x, y, label);
+		if (label instanceof ValueModel) {
+			this.text = label;
+		}
+		else {
+			this.text = new ValueModel(label);
+		}
+		this.textObject = scene.add.text(x, y, this.text.get());
+		this.text.onChange.add(({ newVal }) => this.textObject.setText(newVal));
 		this.normalStyle = {
 			...BASE_BUTTON_STYLE,
 			...config.style,
@@ -86,23 +93,6 @@ export class Button {
 			}
 			this.updateStyle();
 		});
-	}
-
-	/**
-	 * Change the button text
-	 * @param {string} newText - New text to display
-	 */
-	setText(newText: string) {
-		this.text = newText;
-		this.textObject.setText(newText);
-	}
-	
-	/**
-	 * Get the current text
-	 * @returns {string}
-	 */
-	getText() {
-		return this.text;
 	}
 
 	/**
@@ -191,7 +181,6 @@ export class ToggleButton extends Button {
 		super(scene, x, y, w, h, text, {
 			style: config.style, disabled: config.disabled,
 		});
-		this.text = text;
 		this.isToggled = config.isToggled ?? false;
 		this.group = config.group || null;
 		this.onToggleCallback = config.onToggle || null;
@@ -202,12 +191,8 @@ export class ToggleButton extends Button {
 			...config.toggledStyle,
 		};
 		
-		// Create the text object
-		this.textObject = scene.add.text(x, y, text);
-
 		this.updateStyle();
-		this.textObject.setOrigin(0);
-				
+
 		// Add to group if provided
 		if (this.group) {
 			this.group.add(this);

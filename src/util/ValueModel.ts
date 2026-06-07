@@ -5,7 +5,7 @@ type ValueModelChangeEvent<T> = {
 	readonly newVal: T,
 };
 
-class ValueModel<T> {
+export class ValueModel<T> {
 	protected _value: T;
 	readonly onChange: Signal<ValueModelChangeEvent<T>>;
 
@@ -15,6 +15,7 @@ class ValueModel<T> {
 	}
 
 	set(value: T) {
+		console.log("Setting value", value);
 		if (value !== this._value) {
 			const oldVal = this._value;
 			this._value = value;
