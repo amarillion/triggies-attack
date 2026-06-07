@@ -35,7 +35,9 @@ class Game extends Phaser.Game {
 	constructor() {
 		super(gameConfig);
 		this.input.mouse?.disableContextMenu();
-		this.scale.lockOrientation('landscape'); // Doesn't seem to actually do anything?
+
+		// Not sure if this does anything. For a PWA, the manifest property 'orientation' is the way to go.
+		this.scale.lockOrientation('landscape');
 	}
 }
 
