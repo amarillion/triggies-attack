@@ -1,18 +1,21 @@
 {
 	"levels": [
 		{
+			"id": "horizontal",
 			"shop": [],
 			"title": "Horizontal Line",
 			"laser": { "grey": "x = t\ny = 0" },
 			"range": [0, -1, 1, 1]
 		},
 		{
+			"id": "diagonal",
 			"shop": [],
 			"title": "Line",
 			"laser": { "grey": "x = t\ny = t" },
 			"range": [0, 0, 1, 1]
 		},
 		{
+			"id": "cross",
 			"shop": [ "sub", "constant" ],
 			"title": "Cross",
 			"laser": {
@@ -22,24 +25,28 @@
 			"range": [0, 0, 1, 1]
 		},
 		{
+			"id": "hsin",
 			"shop": [ "sin"],
 			"title": "Sine Wave",
 			"laser": { "grey": "x = t\ny = sin(t * 6.28318)" },
 			"range": [0, -1, 1, 1]
 		},
 		{
+			"id": "vcos",
 			"shop": [ "sin", "cos" ],
 			"title": "Vertical Cosine Wave",
 			"laser": { "grey": "y = t\nx = cos(t * 6.28318)" },
 			"range": [-1, 0, 1, 1]
 		},
 		{
+			"id": "circle",
 			"shop": [ "sin", "cos", "sincos" ],
 			"title": "Circle",
 			"laser": { "grey": "x = cos(t * 6.28318)\ny = sin(t * 6.28318)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
+			"id": "sin_ampl",
 			"shop": [ "sin", "add", "sub", "mul", "div", "constant" ],
 			"title": "Amplitude with attitude",
 			"laser": { 
@@ -49,12 +56,14 @@
 			"range": [0, -1, 1, 1]
 		},
 		{
+			"id": "sin_freq",
 			"shop": [ "sin", "cos", "sincos", "mul", "constant" ],
 			"title": "Fast Sine",
 			"laser": { "grey": "x = t\ny = sin(t * 2 * 6.28318)" },
 			"range": [0, -1, 1, 1]
 		},
 		{
+			"id": "sin_phase",
 			"shop": [ "sin", "add", "sub", "mul", "div", "constant" ],
 			"title": "Phase shift",
 			"laser": { 
@@ -64,36 +73,42 @@
 			"range": [0, -1, 1, 1]
 		},
 		{
+			"id": "sawtooth",
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "abs" ],
 			"title": "Sawtooth",
 			"laser": { "grey": "x = t\ny = abs((t * 2) - 1)" },
 			"range": [0, 0, 1, 1]
 		},
 		{
+			"id": "parabola",
 			"title": "Parabola",
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sin", "cos", "sincos" ],
 			"laser": { "grey": "x = (2 * t) - 1\ny = (2 * t - 1) * (2 * t - 1)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
+			"id": "spiral",
 			"title": "Spiral",
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sin", "cos", "sincos" ],
 			"laser": { "grey": "x = t * cos(t * 2 * 6.28318)\ny = t * sin(t * 2 * 6.28318)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
+			"id": "lissajous",
 			"title": "Lissajous",
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sin", "cos", "sincos" ],
 			"laser": { "grey": "x = sin(t * 6.28318)\ny = sin(2 * t * 6.28318)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
+			"id": "pentagon",			
 			"title": "Pentagon",
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sincos", "lerp", "int_frac" ],
 			"laser": { "grey": "n = 5\nstep = floor(t * n)\nbx = cos(step * 6.28318 / n)\nby = sin(step * 6.28318 / n)\ncx = cos((step + 1) * 6.28318 / n)\ncy = sin((step + 1) * 6.28318 / n)\nx = lerp(bx, cx, (t * n) - step)\ny = lerp(by, cy, (t * n) - step)" },
 			"range": [-1, -1, 1, 1]
 		},
 		{
+			"id": "pentagram",			
 			"title": "Pentagram",
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sincos", "lerp" ],
 			"laser": { "grey": "n = 5\nstep = floor(t * n)\nbx = cos(step * 6.28318 / n)\nby = sin(step * 6.28318 / n)\ncx = cos((step + 2) * 6.28318 / n)\ncy = sin((step + 2) * 6.28318 / n)\nx = lerp(bx, cx, (t * n) - step)\ny = lerp(by, cy, (t * n) - step)" },
