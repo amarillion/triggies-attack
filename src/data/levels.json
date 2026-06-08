@@ -110,7 +110,7 @@
 		{
 			"id": "pentagram",			
 			"title": "Pentagram",
-			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sincos", "lerp" ],
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sincos", "lerp", "int_frac" ],
 			"laser": { "grey": "n = 5\nstep = floor(t * n)\nbx = cos(step * 6.28318 / n)\nby = sin(step * 6.28318 / n)\ncx = cos((step + 2) * 6.28318 / n)\ncy = sin((step + 2) * 6.28318 / n)\nx = lerp(bx, cx, (t * n) - step)\ny = lerp(by, cy, (t * n) - step)" },
 			"range": [-1, -1, 1, 1]
 		}
