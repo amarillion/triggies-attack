@@ -5,6 +5,7 @@ import { assert } from '../util/assert';
 const LaserColorSchema = z.enum([ "grey", "red", "blue", "green" ]);
 export type LaserColor = z.infer<typeof LaserColorSchema>;
 const LevelInfoSchema = z.object({
+	id: z.string(),
 	shop: z.array(z.string()),
 	title: z.string(),
 	laser: z.partialRecord(LaserColorSchema, z.string()),
@@ -24,4 +25,12 @@ export function getLevelData(levelNo: number): LevelInfo {
 	const levels = parsedLevelData.data.levels;
 	assert(levelNo >= 0 && levelNo < levels.length, `Invalid level number [${levelNo}]`);
 	return levels[levelNo];
+}
+
+export function lookupLevelById(levelId: string) {
+	assert(parsedLevelData.success, `Invalid level data: ${parsedLevelData.error}`);
+	const { levels } = parsedLevelData.data;
+	const result = levels.findIndex(l => l.id === levelId);
+	// if id can't be found, start at first level.
+	return result < 0 ? 0 : result;
 }

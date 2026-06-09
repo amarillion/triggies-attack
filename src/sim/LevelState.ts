@@ -5,7 +5,7 @@ import { inverseLerp } from '../util/math';
 import { Signal } from '../util/Signal';
 import { IPoint, Point, shortestDistanceToSegment } from '../util/point';
 import { SaveData } from './SaveData';
-import { getLevelData, LaserColor } from './LevelData';
+import { getLevelData, LaserColor, lookupLevelById } from './LevelData';
 import { assert } from '../util/assert';
 import { DefaultMap } from '../util/DefaultMap';
 
@@ -93,7 +93,7 @@ export class LevelState {
 
 	loadFromSave(data: SaveData) {
 
-		this.currentLevel = data.saveData.currentLevel;
+		this.currentLevel = lookupLevelById(data.saveData.currentLevel);
 
 		for (const rawComp of data.saveData.components) {
 			const comp = new Component(rawComp.type);
@@ -477,7 +477,7 @@ export class LevelState {
 	asSaveData(): SaveData {
 		return {
 			saveData: {
-				currentLevel: this.currentLevel,
+				currentLevel: getLevelData(this.currentLevel).id,
 				components: this.components.map(comp => ({
 					type: comp.componentType,
 					x: comp.mx,

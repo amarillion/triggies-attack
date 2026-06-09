@@ -1,6 +1,6 @@
 {
 	"saveData": {
-		"currentLevel": 13,
+		"currentLevel": "pentagon",
 		"components": [
 			{
 				"type": "constant",

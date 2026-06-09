@@ -1,6 +1,6 @@
 {
 	"saveData": {
-		"currentLevel": 0,
+		"currentLevel": "horizontal",
 		"components": [
 			{
 				"type": "monitor",

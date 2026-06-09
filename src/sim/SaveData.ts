@@ -22,7 +22,7 @@ const ConnectorSchema = z.object({
 // Main save data schema
 const SaveDataSchema = z.object({
 	saveData: z.object({
-		currentLevel: z.number(),
+		currentLevel: z.string(),
 		components: z.array(ComponentSchema),
 		connectors: z.array(ConnectorSchema),
 	}),
