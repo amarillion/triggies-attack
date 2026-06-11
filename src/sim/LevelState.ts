@@ -299,7 +299,7 @@ export class LevelState {
 					const value = evaluateExpression(ast, Object.fromEntries(data));
 					data.set(portName, value);
 
-					console.log(`Component ${comp.componentType} port ${portName} calculated value: ${value}`);
+					// console.log(`Component ${comp.componentType} port ${portName} calculated value: ${value}`);
 					// now propagate to connected components
 					const connectors = comp.connectorMap.get(portName);
 					for (const con of connectors) {

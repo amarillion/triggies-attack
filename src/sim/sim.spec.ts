@@ -29,10 +29,7 @@ describe('Simulation', () => {
 			state.loadFromSave(data);
 			let lastLaser: LaserDataType | undefined = undefined;
 			
-			state.onLaser.add(laser => {
-				console.log("Laser fired! ", laser);
-				lastLaser = laser;
-			});
+			state.onLaser.add(laser => lastLaser = laser);
 			const frac = i / 5;
 			state.simulate(frac);
 			expectLaserEquals(lastLaser, {
