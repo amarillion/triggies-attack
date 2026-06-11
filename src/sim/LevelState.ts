@@ -257,6 +257,11 @@ export class LevelState {
 		const globalValues = new Map<string, number>();
 		const visitedComponents = new Set<Component>();
 
+		// reset results of previous calculation
+		for (const comp of this.components) {
+			comp.portValues.clear();
+		}
+
 		function componentReady(comp: Component): boolean {
 			const ports = Object.entries(comp.info.ports);
 			for (const [ portName, portInfo ] of ports) {
@@ -294,7 +299,7 @@ export class LevelState {
 					const value = evaluateExpression(ast, Object.fromEntries(data));
 					data.set(portName, value);
 
-					// console.log(`Component ${comp.componentType} port ${portName} calculated value: ${value}`);
+					console.log(`Component ${comp.componentType} port ${portName} calculated value: ${value}`);
 					// now propagate to connected components
 					const connectors = comp.connectorMap.get(portName);
 					for (const con of connectors) {

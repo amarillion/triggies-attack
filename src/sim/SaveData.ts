@@ -1,7 +1,6 @@
 import { z } from "zod";
-// import saveData from '../data/test-save-lev7.json';
+// import saveData from '../testData/test-save-lev7.json';
 
-// Base component schema
 const ComponentSchema = z.object({
 	type: z.string(),
 	data: z.object({
@@ -13,13 +12,11 @@ const ComponentSchema = z.object({
 	fixed: z.boolean().optional(),
 });
 
-// Connector schema
 const ConnectorSchema = z.object({
 	from: z.tuple([ z.number(), z.number() ]),
 	to: z.tuple([ z.number(), z.number() ]),
 });
 
-// Main save data schema
 const SaveDataSchema = z.object({
 	saveData: z.object({
 		currentLevel: z.string(),
@@ -28,14 +25,11 @@ const SaveDataSchema = z.object({
 	}),
 });
 
-// Type inference
 export type SaveData = z.infer<typeof SaveDataSchema>;
 export type Component = z.infer<typeof ComponentSchema>;
 export type Connector = z.infer<typeof ConnectorSchema>;
 
-
-// Function to parse and validate the data
-function parseSaveData(jsonData: unknown): SaveData {
+export function parseSaveData(jsonData: unknown): SaveData {
 	const result = SaveDataSchema.parse(jsonData);
 	return result;
 }
@@ -47,6 +41,7 @@ export function hasSaveData(): boolean {
 }
 
 export function getQuickSaveData(): SaveData {
+	// uncomment this to override save with test setup.
 	// return parseSaveData(saveData);
 	return parseSaveData(JSON.parse(localStorage.getItem(TINS_QUICK_SAVE) ?? ''));
 }
