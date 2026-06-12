@@ -8,11 +8,13 @@
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"test": "vitest",
+		"perf": "vitest run --project=perf --run",
 		"lint": "eslint"
 	},
 	"devDependencies": {
 		"@eslint/js": "10.0.1",
 		"@stylistic/eslint-plugin": "5.10.0",
+		"@types/node": "25.9.3",
 		"eslint": "10.4.0",
 		"globals": "17.6.0",
 		"typescript": "6.0.3",
