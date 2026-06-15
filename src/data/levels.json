@@ -113,6 +113,20 @@
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "sincos", "lerp", "int_frac" ],
 			"laser": { "grey": "n = 5\nstep = floor(t * n)\nbx = cos(step * 6.28318 / n)\nby = sin(step * 6.28318 / n)\ncx = cos((step + 2) * 6.28318 / n)\ncy = sin((step + 2) * 6.28318 / n)\nx = lerp(bx, cx, (t * n) - step)\ny = lerp(by, cy, (t * n) - step)" },
 			"range": [-1, -1, 1, 1]
+		},
+		{
+			"id": "floor",
+			"title": "Floored",
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "int_frac" ],
+			"laser": { "grey": "x = t\ny = floor(t * 4) / 3" },
+			"range": [0, 0, 1, 1]
+		},
+		{
+			"id": "stripes",
+			"title": "Colored stripes",
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "int_frac" ],
+			"laser": { "green": "x = frac(2 * t - 0.25)\ny = frac(2 * t)", "red": "x = frac(2 * t + 0.25)\ny = frac(2 * t)" },
+			"range": [0, 0, 1, 1]
 		}
 	]
 }
