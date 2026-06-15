@@ -350,7 +350,7 @@ export class LevelState {
 	}
 
 	handleLaserKill(laserCo: Point, color: string) {
-		const CUTOFF_DISTANCE = 0.05;
+		const CUTOFF_DISTANCE = 0.055;
 		// find a triggie within range...
 		for (const trig of this.triggies) {
 			const dist = Point.length(laserCo.minus(trig));
