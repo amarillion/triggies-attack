@@ -122,6 +122,13 @@
 			"range": [0, 0, 1, 1]
 		},
 		{
+			"id": "stairs",
+			"title": "Green & Blue Stairs",
+			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "int_frac" ],
+			"laser": { "green": "x = t\ny = floor(t * 4) / 3", "blue": "x = (floor(t * 3) + 1) / 4\ny = t" },
+			"range": [0, 0, 1, 1]
+		},
+		{
 			"id": "stripes",
 			"title": "Colored stripes",
 			"shop": [ "mul", "add", "sub", "div", "inc", "dec", "constant", "int_frac" ],
