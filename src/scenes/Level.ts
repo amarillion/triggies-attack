@@ -122,7 +122,7 @@ export default class extends Phaser.Scene {
 				this.scene.stop('CircuitBoard');
 				this.scene.stop('Space');
 				if (this.level.currentLevel === levelData.levels.length - 1) {
-					this.scene.start('WinSplash');
+					this.scene.start('Story', { script: 'end' });
 				}
 				else {
 					this.scene.start('LevelSplash', { levelNo: this.level.currentLevel + 1 });

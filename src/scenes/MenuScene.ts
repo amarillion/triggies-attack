@@ -18,7 +18,7 @@ export default class extends Phaser.Scene {
 		const style = { fontSize: '22px' };
 		let yco = this.cameras.main.centerY - 60;
 		new Button(this, this.cameras.main.centerX - (buttonWidth / 2), yco, buttonWidth, 36, "Start Game", {
-			callback: () => { this.scene.start('Story'); },
+			callback: () => { this.scene.start('Story', { script: 'begin' }); },
 			style,
 		});
 		yco += 44;

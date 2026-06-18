@@ -24,7 +24,7 @@ type ScriptItem = {
 	type: "shake",
 };
 
-const script: ScriptItem[] = [
+const beginScript: ScriptItem[] = [
 	{ type: "scene", image: "scene1" },
 	{ type: "sleep", time: 2000 },
 	{ type: "shake" },
@@ -57,15 +57,48 @@ const script: ScriptItem[] = [
 	{ type: "dialog", who: ENGINEER, text: "It will be ready in just a whiffy, captain." },
 ];
 
+const endScript: ScriptItem[] = [
+	{ type: "scene", image: "scene3" },
+	{ type: "sleep", time: 1000 },
+	{ type: "dialog", who: ENGINEER, text: "The waves keep coming faster and faster." },
+	{ type: "dialog", who: ENGINEER, text: "I don't know how much longer we can keep this up, Captain!" },
+	{ type: "shake" },
+	{ type: "sleep", time: 500 },
+	{ type: "shake" },
+	{ type: "sleep", time: 1000 },
+	{ type: "scene", image: "scene1" },
+	{ type: "dialog", who: ENSIGN, text: "The triggies' activity is generating some kind of tachyon storm." },
+	{ type: "dialog", who: ENGINEER, text: "Oh no, they are tearing a rift in the space-time continuum!" },
+	{ type: "dialog", who: ENSIGN, text: "We're traveling back in time!" },
+	{ type: "sleep", time: 1000 },
+	{ type: "shake" },
+	{ type: "shake" },
+	{ type: "shake" },
+	{ type: "shake" },
+	{ type: "shake" },
+	{ type: "shake" },
+	// TODO: need a fade-out here....
+	{ type: "scene", image: "scene2" },
+	{ type: "sleep", time: 2000 },
+	{ type: "dialog", who: CAPTAIN, text: "Ensign, please scan the sector." },
+	{ type: "dialog", who: ENSIGN, text: "I am detecting 70 particles per cubic kilometer. There is nothing remarkable in this sector." },
+	{ type: "dialog", who: CAPTAIN, text: "Set a course for deep space 9. Warp 7." },
+	{ type: "sleep", time: 500 },
+	{ type: "dialog", who: CAPTAIN, text: "Engage." },
+];
+
 export default class extends Phaser.Scene {
 
 	constructor() {
 		super({ key: 'Story' });
 	}
 
-	create() {
+	scriptId: 'end' | 'begin' = 'begin';
+
+	create({ script }: { script: 'end' | 'begin' }) {
+		this.scriptId = script;
 		this.cameras.main.setBackgroundColor('rgb(68, 50, 0)');
-		this.script = this.scriptRunner();
+		this.script = this.scriptRunner(this.scriptId === 'end' ? endScript : beginScript);
 
 		this.input.on('pointerdown', () => this.endScene());
 		this.input.keyboard?.once('keydown', () => this.endScene());
@@ -75,7 +108,12 @@ export default class extends Phaser.Scene {
 
 	endScene() {
 		this.script = undefined;
-		this.scene.start('LevelSplash', { levelNo: 0 });
+		if (this.scriptId === 'end') {
+			this.scene.start('WinSplash');
+		}
+		else {
+			this.scene.start('LevelSplash', { levelNo: 0 });
+		}
 	}
 
 	preload() {
@@ -151,7 +189,7 @@ export default class extends Phaser.Scene {
 		this.sceneImage = this.add.image(320, 140, image);
 	}
 	
-	*scriptRunner() {
+	*scriptRunner(script: ScriptItem[]) {
 		for (const line of script) {
 			if (line.type === "scene") {
 				this.setSceneImage(line.image);
